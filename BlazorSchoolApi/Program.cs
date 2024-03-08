@@ -1,5 +1,8 @@
 using BlazorSchoolApi.Data;
+using BlazorSchoolApi.Interfaces;
 using BlazorSchoolApi.Routes;
+using BlazorSchoolApi.Services;
+using BlazorSchoolShared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,6 +32,9 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>(c =>
     .AddEntityFrameworkStores<SchoolContext>();
 
 builder.Services.AddCors();
+
+builder.Services.AddScoped<ICrudService<StudentDto>, StudentService>();
+
 var app = builder.Build();
 app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
 // Configure the HTTP request pipeline.
