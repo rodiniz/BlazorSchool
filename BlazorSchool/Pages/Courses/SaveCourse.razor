@@ -1,0 +1,14 @@
+﻿@page "/Course/Save"
+<h3>SaveCourse</h3>
+<EditForm Model="@_course" OnValidSubmit="@SubmitValidForm">
+    <FluentValidationValidator />
+   
+    <p>
+        <label>Name: </label>
+        <InputText @bind-Value="@_course.Description" />
+        <ValidationMessage For="@(() => _course.Description)" />
+    </p>
+    
+    <button type="submit">Save</button>
+</EditForm>
+

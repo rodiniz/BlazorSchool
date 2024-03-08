@@ -5,6 +5,7 @@ namespace BlazorSchoolApi.Data
 {
     public class SchoolContext:IdentityDbContext<IdentityUser>
     {
+        public DbSet<Course> Courses { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<CourseCycle> CourseCycles { get; set; }

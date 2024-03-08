@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace BlazorSchoolApi.Data
+﻿namespace BlazorSchoolApi.Data
 {
     public class Student 
     {

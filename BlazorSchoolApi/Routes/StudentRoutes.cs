@@ -1,19 +1,15 @@
-﻿using BlazorSchoolApi.Data;
-using BlazorSchoolApi.Interfaces;
-using BlazorSchoolApi.Services;
+﻿using BlazorSchoolApi.Interfaces;
 using BlazorSchoolShared;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BlazorSchoolApi.Routes
 {
     public static class StudentRoutes
     {
+
         public static void AddStudentRoutes(this WebApplication app)
         {
             var group = app.MapGroup("/Student");
-          
-
             group.MapPost("/",async (
                     [FromServices] ICrudService<StudentDto> service,
                     [FromBody] StudentDto studentDto) => await service.Create(studentDto))
