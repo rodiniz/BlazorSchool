@@ -17,6 +17,7 @@ namespace BlazorSchoolApi.Routes
 
             group.MapGet("/", ([FromServices] ICrudService<StudentDto> studentService) => studentService.GetAll());
             group.MapGet("/{id}", async ([FromServices] ICrudService<StudentDto> studentService, int id) => await studentService.Get(id));
+            group.MapPut("/{id}", async ([FromServices] ICrudService<StudentDto> studentService, int id, [FromBody] StudentDto courseDto) => await studentService.Update(id, courseDto));
             group.MapDelete("/{id}", async ([FromServices] ICrudService<StudentDto> studentService, int id) => await studentService.Delete(id));
         }
 

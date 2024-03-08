@@ -3,6 +3,8 @@ using BlazorSchoolApi.Interfaces;
 using BlazorSchoolApi.Routes;
 using BlazorSchoolApi.Services;
 using BlazorSchoolShared;
+using BlazorSchoolShared.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,7 +36,8 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>(c =>
 builder.Services.AddCors();
 
 builder.Services.AddScoped<ICrudService<StudentDto>, StudentService>();
-
+builder.Services.AddScoped<ICrudService<CourseDto>, CourseService>();
+builder.Services.AddValidatorsFromAssemblyContaining<CourseValidator>();
 var app = builder.Build();
 app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
 // Configure the HTTP request pipeline.
@@ -47,7 +50,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.AddStudentRoutes();
-
+app.AddCourseRoutes();
 app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
