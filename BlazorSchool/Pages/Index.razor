@@ -1,3 +1,11 @@
 ﻿@page "/"
-
-<h1>Hello, world!</h1>
+@layout LoginLayout
+<MudCard Class="d-flex justify-center">
+    <MudCardContent>
+        <MudText>Story of the day</MudText>
+        <MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
+    </MudCardActions>
+</MudCard>
