@@ -1,11 +1,30 @@
 ﻿@page "/"
+@using BlazorSchool.Services
 @layout LoginLayout
-<MudCard Class="d-flex justify-center">
-    <MudCardContent>
-        <MudText>Story of the day</MudText>
-        <MudText Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>
-    </MudCardContent>
-    <MudCardActions>
-        <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
-    </MudCardActions>
-</MudCard>
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+<MudContainer Class="pt-12 pa-4 align-center justify-center " MaxWidth="MaxWidth.ExtraSmall">
+    <MudCard xs="6">
+        <MudCardContent  >
+            <EditForm Model="@_loginModel" OnValidSubmit="HandleRegistration">
+                <MudGrid>
+                    <MudItem xs="12">
+                        <MudCard>
+                            <MudCardContent>
+                                <MudTextField Label="Email" 
+                                              @bind-Value="_loginModel.Email" For="@(() => _loginModel.Email)" />
+                                <MudTextField Label="Password" HelperText="Choose a strong password" 
+                                              @bind-Value="_loginModel.Password" For="@(() => _loginModel.Password)" InputType="InputType.Password" />
+         
+                            </MudCardContent>
+                            <MudCardActions>
+                                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Log In</MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                </MudGrid>
+            </EditForm>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
