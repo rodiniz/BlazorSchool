@@ -81,20 +81,21 @@ namespace BlazorSchoolApi.Services
 
         public async Task<IResult> Update(int id, StudentDto model)
         {
-           await _context.Students
+          var affected= await _context.Students
                 .Where(b => b.Id ==id)
                 .ExecuteUpdateAsync(setters => setters
                     .SetProperty(b => b.Name, model.Name)
                     .SetProperty(b => b.Address, model.Address)
                     .SetProperty(b => b.BirthDate, model.BirthDate)
                 );
-            return TypedResults.Ok();
+
+          return affected == 0 ? TypedResults.NotFound(): TypedResults.Ok();
         }
 
         public async Task<IResult> Delete(int idEntity)
         {
-            await _context.Students.Where(c => c.Id == idEntity).ExecuteDeleteAsync();
-            return TypedResults.Ok();
+            var affected= await _context.Students.Where(c => c.Id == idEntity).ExecuteDeleteAsync();
+            return affected==0? TypedResults.NotFound(): TypedResults.Ok();
         }
 
         public Task<IResult> GetAll()

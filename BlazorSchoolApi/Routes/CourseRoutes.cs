@@ -8,7 +8,7 @@ namespace BlazorSchoolApi.Routes
     {
         public static void AddCourseRoutes(this WebApplication app)
         {
-            var group = app.MapGroup("/Course");
+            var group = app.MapGroup("/Course").RequireAuthorization();
             group.MapPost("/", async (
                     [FromServices] ICrudService<CourseDto> service,
                     [FromBody] CourseDto courseDto) => await service.Create(courseDto))
