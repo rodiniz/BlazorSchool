@@ -1,4 +1,4 @@
-﻿using BlazorSchoolShared;
+﻿using BlazorSchoolShared.Dto;
 
 namespace BlazorSchool.Pages.Courses
 {

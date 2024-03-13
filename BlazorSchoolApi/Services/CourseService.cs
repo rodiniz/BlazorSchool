@@ -1,6 +1,7 @@
 ﻿using BlazorSchoolApi.Data;
 using BlazorSchoolApi.Interfaces;
 using BlazorSchoolShared;
+using BlazorSchoolShared.Dto;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,9 +17,14 @@ namespace BlazorSchoolApi.Services
             _validator = validator;
         }
 
-        public Task<IResult> Get(int id)
+        public async Task<IResult> Get(int id)
         {
-            throw new NotImplementedException();
+            var course = await _context.Courses.SingleOrDefaultAsync(c => c.Id == id);
+            return course == null ? TypedResults.NotFound() : TypedResults.Ok(new CourseDto
+            {
+                Id = course.Id,
+                Description = course.Description
+            });
         }
 
         public async Task<IResult> Create(CourseDto model)
@@ -49,9 +55,10 @@ namespace BlazorSchoolApi.Services
             return TypedResults.Ok();
         }
 
-        public Task<IResult> Delete(int idEntity)
+        public async Task<IResult> Delete(int idEntity)
         {
-            throw new NotImplementedException();
+            var affected = await _context.Courses.Where(c => c.Id == idEntity).ExecuteDeleteAsync();
+            return affected == 0 ? TypedResults.NotFound() : TypedResults.Ok();
         }
 
         public Task<IResult> GetAll()

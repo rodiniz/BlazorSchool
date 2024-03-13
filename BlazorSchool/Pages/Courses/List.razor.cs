@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using BlazorSchoolShared;
+using BlazorSchoolShared.Dto;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorSchool.Pages.Courses
@@ -11,6 +11,15 @@ namespace BlazorSchool.Pages.Courses
         protected override async Task OnInitializedAsync()
         {
             Courses= await HttpClient.GetFromJsonAsync<List<CourseDto>>("Course");
+        }
+        public void NavidateToSave(int? id)
+        {
+            Manager.NavigateTo("/SaveCourse");
+        }
+
+        public void Delete(int id)
+        {
+
         }
     }
 }

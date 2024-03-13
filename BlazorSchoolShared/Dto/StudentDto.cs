@@ -1,4 +1,4 @@
-﻿namespace BlazorSchoolShared
+﻿namespace BlazorSchoolShared.Dto
 {
     public class StudentDto
     {

@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using BlazorSchoolShared.Dto;
+using FluentValidation;
 
 namespace BlazorSchoolShared.Validators
 {

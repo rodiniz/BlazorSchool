@@ -1,8 +1,9 @@
+using BlazorSchoolApi;
 using BlazorSchoolApi.Data;
 using BlazorSchoolApi.Interfaces;
 using BlazorSchoolApi.Routes;
 using BlazorSchoolApi.Services;
-using BlazorSchoolShared;
+using BlazorSchoolShared.Dto;
 using BlazorSchoolShared.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
@@ -46,7 +47,7 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>(c =>
     .AddEntityFrameworkStores<SchoolContext>();
 
 builder.Services.AddCors();
-
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddScoped<ICrudService<StudentDto>, StudentService>();
 builder.Services.AddScoped<ICrudService<CourseDto>, CourseService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CourseValidator>();

@@ -1,5 +1,5 @@
 ﻿using BlazorSchoolApi.Interfaces;
-using BlazorSchoolShared;
+using BlazorSchoolShared.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorSchoolApi.Routes
@@ -9,7 +9,7 @@ namespace BlazorSchoolApi.Routes
 
         public static void AddStudentRoutes(this WebApplication app)
         {
-            var group = app.MapGroup("/Student");
+            var group = app.MapGroup("/Student").RequireAuthorization();
             group.MapPost("/",async (
                     [FromServices] ICrudService<StudentDto> service,
                     [FromBody] StudentDto studentDto) => await service.Create(studentDto))

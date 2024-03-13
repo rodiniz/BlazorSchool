@@ -1,5 +1,5 @@
 ﻿using BlazorSchoolApi.Interfaces;
-using BlazorSchoolShared;
+using BlazorSchoolShared.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorSchoolApi.Routes

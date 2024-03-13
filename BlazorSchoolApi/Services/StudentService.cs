@@ -1,6 +1,7 @@
 ﻿using BlazorSchoolApi.Data;
 using BlazorSchoolApi.Interfaces;
 using BlazorSchoolShared;
+using BlazorSchoolShared.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,18 +25,14 @@ namespace BlazorSchoolApi.Services
         public async Task<IResult> Get(int id)
         {
             var student = await _context.Students.SingleOrDefaultAsync(c => c.Id == id);
-            if (student == null)
-            {
-                return TypedResults.NotFound();
-            }
-
-            return TypedResults.Ok(new StudentDto
-            {
-                Id = student.Id,
-                Name = student.Name,
-                Address = student.Address,
-                BirthDate = student.BirthDate
-            });
+            return student == null ? TypedResults.NotFound(): 
+                    TypedResults.Ok(new StudentDto
+                    {
+                        Id = student.Id,
+                        Name = student.Name,
+                        Address = student.Address,
+                        BirthDate = student.BirthDate
+                    });
         }
 
         public async Task<IResult> Create(StudentDto model)

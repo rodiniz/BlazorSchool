@@ -1,12 +1,16 @@
 ﻿@page "/Course/List"
+@using Microsoft.VisualBasic.FileIO
 @attribute [Authorize]
+@inject NavigationManager Manager
+<MudIconButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary" Icon="@Icons.Material.Filled.Create" OnClick="()=>NavidateToSave(null)">Create</MudIconButton>
 <MudDataGrid Items="@Courses">
     <Columns>
         <PropertyColumn Property="x => x.Description"  />
         <TemplateColumn CellClass="d-flex justify-end">
             <CellTemplate>
                 <MudStack Row>
-                    <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</MudButton>
+                    <MudIconButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary" Icon="@Icons.Material.Filled.Edit" OnClick="()=>NavidateToSave(context.Item.Id)">Edit</MudIconButton>
+                    <MudIconButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary" Icon="@Icons.Material.Filled.Edit" OnClick="()=>Delete(context.Item.Id)">Delete</MudIconButton>
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
