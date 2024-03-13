@@ -7,14 +7,14 @@ namespace BlazorSchool.Pages
     public partial class Index
     {
 
-        private readonly LoginModel _loginModel = new LoginModel();
+        private readonly LoginModel _loginModel = new();
         private async Task HandleRegistration()
         {
             var result = await AuthService.Login(_loginModel);
 
             if (result.Successful)
             {
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/main");
             }
             else
             {

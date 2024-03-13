@@ -1,4 +1,5 @@
 ﻿@page "/Course/Save"
+@attribute [Authorize]
 <h3>SaveCourse</h3>
 <EditForm Model="@_course" OnValidSubmit="@SubmitValidForm">
     <FluentValidationValidator />

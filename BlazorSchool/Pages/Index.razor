@@ -11,12 +11,15 @@
                 <MudGrid>
                     <MudItem xs="12">
                         <MudCard>
+                            <MudCardHeader>
+                                Login
+                            </MudCardHeader>
                             <MudCardContent>
-                                <MudTextField Label="Email" 
-                                              @bind-Value="_loginModel.Email" For="@(() => _loginModel.Email)" />
-                                <MudTextField Label="Password" HelperText="Choose a strong password" 
-                                              @bind-Value="_loginModel.Password" For="@(() => _loginModel.Password)" InputType="InputType.Password" />
-         
+                                <MudTextField Label="Email"
+                                              @bind-Value="_loginModel.Email" For="@(() => _loginModel.Email)"/>
+                                <MudTextField Label="Password"
+                                              @bind-Value="_loginModel.Password" For="@(() => _loginModel.Password)" InputType="InputType.Password"/>
+
                             </MudCardContent>
                             <MudCardActions>
                                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Log In</MudButton>

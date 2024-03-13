@@ -1,0 +1,15 @@
+﻿@page "/Course/List"
+@attribute [Authorize]
+<MudDataGrid Items="@Courses">
+    <Columns>
+        <PropertyColumn Property="x => x.Description"  />
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudStack Row>
+                    <MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">Edit</MudButton>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+       
+    </Columns>
+</MudDataGrid>
