@@ -5,21 +5,23 @@
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
 <MudContainer Class="pt-12 pa-4 align-center justify-center " MaxWidth="MaxWidth.ExtraSmall">
-    <MudCard xs="6">
+    <MudCard xs="6" Square="true" Elevation="4">
         <MudCardContent  >
             <EditForm Model="@_loginModel" OnValidSubmit="HandleRegistration">
+            <FluentValidationValidator />
                 <MudGrid>
                     <MudItem xs="12">
                         <MudCard>
-                            <MudCardHeader>
+                            <MudCardHeader Style="background-color:blueviolet;color: #d6d5d5;font-size: x-large" >
                                 Login
                             </MudCardHeader>
                             <MudCardContent>
                                 <MudTextField Label="Email"
                                               @bind-Value="_loginModel.Email" For="@(() => _loginModel.Email)"/>
+                               
                                 <MudTextField Label="Password"
                                               @bind-Value="_loginModel.Password" For="@(() => _loginModel.Password)" InputType="InputType.Password"/>
-
+                                 
                             </MudCardContent>
                             <MudCardActions>
                                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Log In</MudButton>

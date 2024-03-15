@@ -1,15 +1,15 @@
-﻿@page "/Course/Save"
+﻿@page "/Course/Save/{Id:int?}"
 @attribute [Authorize]
 <h3>SaveCourse</h3>
-<EditForm Model="@_course" OnValidSubmit="@SubmitValidForm">
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+<EditForm Model="@_course" OnValidSubmit="SubmitValidForm">
     <FluentValidationValidator />
-   
-    <p>
-        <label>Name: </label>
-        <InputText @bind-Value="@_course.Description" />
-        <ValidationMessage For="@(() => _course.Description)" />
-    </p>
     
-    <button type="submit">Save</button>
+     <MudTextField Label="Descrição"
+      @bind-Value="_course.Description" For="@(() => _course.Description)"/>
+     
+   
+    
+    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
 </EditForm>
-
+</MudContainer>
