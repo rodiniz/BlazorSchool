@@ -1,6 +1,8 @@
-﻿namespace BlazorSchoolApi.Data
+﻿using BlazorSchoolApi.Interfaces;
+
+namespace BlazorSchoolApi.Data
 {
-    public class Enrollment
+    public class Enrollment : IEntity
     {
         public int Id { get; set; }
         public string StudentId { get; set; }

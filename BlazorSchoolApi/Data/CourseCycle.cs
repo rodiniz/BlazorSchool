@@ -1,6 +1,8 @@
-﻿namespace BlazorSchoolApi.Data
+﻿using BlazorSchoolApi.Interfaces;
+
+namespace BlazorSchoolApi.Data
 {
-    public class CourseCycle
+    public class CourseCycle: IEntity
     {
         public int Id { get; set; }
         public virtual Course Course { get; set; }

@@ -1,6 +1,8 @@
-﻿namespace BlazorSchoolApi.Data
+﻿using BlazorSchoolApi.Interfaces;
+
+namespace BlazorSchoolApi.Data
 {
-    public class StudentTests
+    public class StudentTests : IEntity
     {
         public int Id { get; set; }
 

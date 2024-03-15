@@ -9,9 +9,8 @@ namespace BlazorSchool.Pages
 
         private readonly LoginModel _loginModel = new();
         protected override async Task OnInitializedAsync()
-        {
-            var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            if (authenticationState.User.Identity?.IsAuthenticated??false)
+        {            
+            if (await AuthService.IsLoggedIn())
             {
                 NavigationManager.NavigateTo("/main");
             }           

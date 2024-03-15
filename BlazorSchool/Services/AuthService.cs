@@ -65,6 +65,13 @@ namespace BlazorSchool.Services
             ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
             _httpClient.DefaultRequestHeaders.Authorization = null;
         }
+
+        public async Task<bool> IsLoggedIn()
+        {
+            var authenticationState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+
+            return authenticationState.User.Identity?.IsAuthenticated??false;
+        }
     }
 
 }

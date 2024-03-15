@@ -6,6 +6,7 @@ namespace BlazorSchool.Services
     {
         Task<LoginResult> Login(LoginModel loginModel);
         Task<RegisterResultModel> Register(LoginModel loginModel);
-        Task Logout();        
+        Task Logout();
+        Task<bool> IsLoggedIn();
     }
 }

@@ -9,10 +9,15 @@ namespace BlazorSchool.Pages.Courses
     {
         [Parameter]
         public int? Id { get; set; }
+
         private CourseDto _course = new();
-        [Inject] private  HttpClient _client { get; set; }
+
+        [Inject] 
+        private  HttpClient _client { get; set; }
         
-        [Inject] private  NavigationManager _Manager { get; set; }
+        [Inject] 
+        private  NavigationManager _Manager { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             if (Id.HasValue)
