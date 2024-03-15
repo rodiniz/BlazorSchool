@@ -53,12 +53,10 @@ builder.Services.AddScoped<ICrudService<CourseDto>, CourseService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CourseValidator>();
 var app = builder.Build();
 app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 

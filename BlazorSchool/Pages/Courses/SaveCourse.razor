@@ -1,15 +1,18 @@
 ﻿@page "/Course/Save/{Id:int?}"
 @attribute [Authorize]
-<h3>SaveCourse</h3>
-<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-12 pa-4 align-center justify-center ">
 <EditForm Model="@_course" OnValidSubmit="SubmitValidForm">
     <FluentValidationValidator />
+     <MudCard xs="6" Square="true" Elevation="4">
+         <MudCardContent>
+                 <MudTextField Label="Descrição"
+                  @bind-Value="_course.Description" For="@(() => _course.Description)"/>
+         </MudCardContent>
+        <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+        </MudCardActions>
     
-     <MudTextField Label="Descrição"
-      @bind-Value="_course.Description" For="@(() => _course.Description)"/>
-     
    
-    
-    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+    </MudCard>
 </EditForm>
 </MudContainer>

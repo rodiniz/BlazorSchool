@@ -399,3 +399,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 .idea
+BlazorSchoolApi/appsettings.Development.json
+BlazorSchoolApi/appsettings.json

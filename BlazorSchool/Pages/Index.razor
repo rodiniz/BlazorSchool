@@ -1,9 +1,12 @@
 ﻿@page "/"
 @using BlazorSchool.Services
+@using Microsoft.AspNetCore.Components.Authorization
 @layout LoginLayout
 @inject IAuthService AuthService
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 <MudContainer Class="pt-12 pa-4 align-center justify-center " MaxWidth="MaxWidth.ExtraSmall">
     <MudCard xs="6" Square="true" Elevation="4">
         <MudCardContent  >
