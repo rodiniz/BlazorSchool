@@ -1,12 +1,14 @@
 ﻿@page "/Course/Save/{Id:int?}"
 @attribute [Authorize]
+@using BlazorSchoolShared.Dto
+@inherits BaseSavePage<CourseDto>
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-12 pa-4 align-center justify-center ">
-<EditForm Model="@_course" OnValidSubmit="SubmitValidForm">
+<EditForm Model="@dto" OnValidSubmit="SubmitValidForm">
     <FluentValidationValidator />
      <MudCard xs="6" Square="true" Elevation="4">
          <MudCardContent>
                  <MudTextField Label="Descrição"
-                  @bind-Value="_course.Description" For="@(() => _course.Description)"/>
+                  @bind-Value="dto.Description" For="@(() => dto.Description)"/>
          </MudCardContent>
         <MudCardActions>
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
