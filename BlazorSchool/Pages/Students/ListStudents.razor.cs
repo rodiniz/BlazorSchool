@@ -3,12 +3,12 @@ using BlazorSchoolShared.Dto;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace BlazorSchool.Pages.Courses
+namespace BlazorSchool.Pages.Students
 {
-    public partial class List
+    public partial class ListStudents
     {
-        [Inject] private HttpClient? HttpClient { get; set; }
-        [Inject] private IDialogService? DialogService { get; set; }
+        [Inject] private HttpClient HttpClient { get; set; }
+        [Inject] private IDialogService DialogService { get; set; }
         public List<CourseDto>? Courses { get; set; }
         
         protected override async Task OnInitializedAsync()

@@ -1,0 +1,30 @@
+﻿@page "/Students/Save/{Id:int?}"
+@attribute [Authorize]
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-12 pa-4 align-center justify-center ">
+<EditForm Model="@_student" OnValidSubmit="SubmitValidForm">
+    <FluentValidationValidator />
+     <MudCard xs="6" Square="true" Elevation="4">
+         <MudCardContent>
+                 <MudTextField Label="E-Mail"
+                  @bind-Value="_student.Email" For="@(() => _student.Email)"/>
+                <MudTextField Label="E-Mail"
+                              @bind-Value="_student.Name" For="@(() => _student.Name)" />
+
+                <MudTextField Label="Password"
+                              @bind-Value="_student.Password" For="@(() => _student.Password)" />
+
+                <MudTextField Label="Address"
+                              @bind-Value="_student.Address" For="@(() => _student.Address)" />
+              
+
+                <MudDatePicker Label="Data de Nascimento" @bind-bind-Date="_student.BirthDate" 
+                For="@(() => _student.BirthDate)"></MudDatePicker>
+         </MudCardContent>
+        <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+        </MudCardActions>
+    
+   
+    </MudCard>
+</EditForm>
+</MudContainer>
