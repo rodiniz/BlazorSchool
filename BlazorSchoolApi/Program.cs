@@ -53,7 +53,7 @@ builder.Services.AddScoped<ICrudService<CourseDto>, CourseService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CourseValidator>();
 var app = builder.Build();
 app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
-
+app.MapGet("/idenity/logout",async (SignInManager<IdentityUser> manager)=> await manager.SignOutAsync());
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -66,7 +66,7 @@ app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowAnyOrigin()
-    .AllowCredentials());
+    );
 
 
 app.Run();
