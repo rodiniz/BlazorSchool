@@ -1,24 +1,27 @@
 ﻿@page "/Students/Save/{Id:int?}"
 @attribute [Authorize]
+@using BlazorSchoolShared.Dto
+@inherits BaseSavePage<StudentDto>
+@inject ISnackbar Snackbar
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-12 pa-4 align-center justify-center ">
-<EditForm Model="@_student" OnValidSubmit="SubmitValidForm">
+<EditForm Model="@dto" OnValidSubmit="SubmitValidForm">
     <FluentValidationValidator />
      <MudCard xs="6" Square="true" Elevation="4">
          <MudCardContent>
                  <MudTextField Label="E-Mail"
-                  @bind-Value="_student.Email" For="@(() => _student.Email)"/>
+                  @bind-Value="dto.Email" For="@(() => dto.Email)"/>
                 <MudTextField Label="E-Mail"
-                              @bind-Value="_student.Name" For="@(() => _student.Name)" />
+                              @bind-Value="dto.Name" For="@(() => dto.Name)" />
 
                 <MudTextField Label="Password"
-                              @bind-Value="_student.Password" For="@(() => _student.Password)" />
+                              @bind-Value="dto.Password" For="@(() => dto.Password)" />
 
                 <MudTextField Label="Address"
-                              @bind-Value="_student.Address" For="@(() => _student.Address)" />
+                              @bind-Value="dto.Address" For="@(() => dto.Address)" />
               
 
-                <MudDatePicker Label="Data de Nascimento" @bind-bind-Date="_student.BirthDate" 
-                For="@(() => _student.BirthDate)"></MudDatePicker>
+                <MudDatePicker Label="Data de Nascimento" @bind-bind-Date="dto.BirthDate" 
+                For="@(() => dto.BirthDate)"></MudDatePicker>
          </MudCardContent>
         <MudCardActions>
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>

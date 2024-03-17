@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace BlazorSchool.Pages.Courses
 {
@@ -8,20 +9,18 @@ namespace BlazorSchool.Pages.Courses
         public SaveCourse():base("Course")
         {
             
-        }
-        
-        [Inject] 
-        private  NavigationManager _Manager { get; set; }       
+        }       
+         
 
-        private async Task SubmitValidForm()
+       private async Task SubmitValidForm()
         {
              var sucess=await  Save();
              if(sucess){
                 _Manager.NavigateTo("/Course/List");
              }
-             else{
-
-             }
+            else{
+                Snackbar.Add("Error saving  Course", Severity.Error);
+            }
             
         }
             

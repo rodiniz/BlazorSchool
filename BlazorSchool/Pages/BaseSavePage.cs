@@ -12,7 +12,7 @@ public class BaseSavePage<T>:ComponentBase
         private  HttpClient _client { get; set; }
         
         [Inject] 
-        private  NavigationManager _Manager { get; set; }
+        protected  NavigationManager _Manager { get; set; }
 
         private string _url{ get; set; }
         public BaseSavePage(string url)

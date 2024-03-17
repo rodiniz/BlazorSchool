@@ -2,6 +2,7 @@
 @attribute [Authorize]
 @using BlazorSchoolShared.Dto
 @inherits BaseSavePage<CourseDto>
+@inject ISnackbar Snackbar
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-12 pa-4 align-center justify-center ">
 <EditForm Model="@dto" OnValidSubmit="SubmitValidForm">
     <FluentValidationValidator />
