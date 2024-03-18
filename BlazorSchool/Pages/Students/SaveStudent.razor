@@ -1,16 +1,19 @@
-﻿@page "/Students/Save/{Id:int?}"
+﻿@page "/Student/Save/{Id:int?}"
 @attribute [Authorize]
 @using BlazorSchoolShared.Dto
+@using Blazored.FluentValidation
+@using Microsoft.AspNetCore.Components.Forms
+@using MudBlazor
 @inherits BaseSavePage<StudentDto>
 @inject ISnackbar Snackbar
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-12 pa-4 align-center justify-center ">
-<EditForm Model="@dto" OnValidSubmit="SubmitValidForm">
+<EditForm Model="dto" OnValidSubmit="SubmitValidForm">
     <FluentValidationValidator />
      <MudCard xs="6" Square="true" Elevation="4">
          <MudCardContent>
                  <MudTextField Label="E-Mail"
                   @bind-Value="dto.Email" For="@(() => dto.Email)"/>
-                <MudTextField Label="E-Mail"
+                <MudTextField Label="Name"
                               @bind-Value="dto.Name" For="@(() => dto.Name)" />
 
                 <MudTextField Label="Password"
@@ -20,8 +23,7 @@
                               @bind-Value="dto.Address" For="@(() => dto.Address)" />
               
 
-                <MudDatePicker Label="Data de Nascimento" @bind-bind-Date="dto.BirthDate" 
-                For="@(() => dto.BirthDate)"></MudDatePicker>
+                <MudDatePicker Label="BirthDate" @bind-Date="dto.BirthDate" For="@(() => dto.BirthDate)"/>
          </MudCardContent>
         <MudCardActions>
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorSchool;
 
-public class BaseSavePage<T>:ComponentBase
+public class BaseSavePage<T>:ComponentBase where T:new()
 {
         [Parameter]
         public int? Id { get; set; }
@@ -20,7 +20,7 @@ public class BaseSavePage<T>:ComponentBase
             _url=url;
         }
 
-        protected T dto{ get; set; }
+        protected T dto{ get; set; }= new ();
         protected override async Task OnInitializedAsync()
         {
             if (Id.HasValue)

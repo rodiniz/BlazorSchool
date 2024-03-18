@@ -66,7 +66,7 @@ namespace BlazorSchoolApi.Services
             {
                 Name = model.Name,
                 Address = model.Address,
-                BirthDate = model.BirthDate,
+                BirthDate = model.BirthDate?? DateTime.Now,
                 UserId = userCreated.Id
 
             };
@@ -97,8 +97,9 @@ namespace BlazorSchoolApi.Services
 
         public Task<IResult> GetAll()
         {
-             var result=_context.Students.OrderBy(c => c.Name).Select(c=> new StudentDto
+             var result=_context.Students.AsNoTracking().OrderBy(c => c.Name).Select(c=> new StudentDto
              {
+                 Id=c.Id,
                  Name = c.Name,
                  Address = c.Address,
                  BirthDate = c.BirthDate
@@ -108,7 +109,7 @@ namespace BlazorSchoolApi.Services
 
         public Task<IResult> GetPaged(TableStateDto tableStateDto)
         {
-            var result = _context.Students.OrderBy(c => c.Name).Select(c => new StudentDto
+            var result = _context.Students.AsNoTracking().OrderBy(c => c.Name).Select(c => new StudentDto
             {
                 Name = c.Name,
                 Address = c.Address,

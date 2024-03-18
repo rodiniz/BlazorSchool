@@ -9,15 +9,15 @@ namespace BlazorSchool.Pages.Students
     {
         [Inject] private HttpClient HttpClient { get; set; }
         [Inject] private IDialogService DialogService { get; set; }
-        public List<CourseDto>? Courses { get; set; }
+        public List<StudentDto>? Students { get; set; }
         
         protected override async Task OnInitializedAsync()
         {
-            Courses= await HttpClient.GetFromJsonAsync<List<CourseDto>>("Course");
+            Students= await HttpClient.GetFromJsonAsync<List<StudentDto>>("Student");
         }
         public void NavidateToSave(int? id)
         {
-            Manager.NavigateTo($"/Course/Save/{id}");
+            Manager.NavigateTo($"/Student/Save/{id}");
         }
 
         public async Task Delete(int id)
@@ -28,8 +28,8 @@ namespace BlazorSchool.Pages.Students
                 yesText:"Yes", noText:"No");
             if (result.HasValue)
             {
-                await HttpClient.DeleteAsync($"Course/{id}");
-                Courses= await HttpClient.GetFromJsonAsync<List<CourseDto>>("Course");
+                await HttpClient.DeleteAsync($"Student/{id}");
+                Students= await HttpClient.GetFromJsonAsync<List<StudentDto>>("Student");
             }    
         }
     }
