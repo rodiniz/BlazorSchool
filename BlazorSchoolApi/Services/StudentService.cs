@@ -61,7 +61,7 @@ namespace BlazorSchoolApi.Services
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             //var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
             //var message = new Message(new string[] { user.Email }, "Confirmation email link", confirmationLink, null);
-            //await _emailSender.SendEmailAsync(message);
+            //clsawait _emailSender.SendEmailAsync(message);
 
           
             var userCreated = await _userManager.FindByEmailAsync(model.Email);
