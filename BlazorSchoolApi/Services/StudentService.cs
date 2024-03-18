@@ -50,13 +50,20 @@ namespace BlazorSchoolApi.Services
                 Email = model.Email
             };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user);
 
             if (!result.Succeeded)
             {
                 return TypedResults.BadRequest(result.Errors);
             }
 
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            //var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
+            //var message = new Message(new string[] { user.Email }, "Confirmation email link", confirmationLink, null);
+            //await _emailSender.SendEmailAsync(message);
+
+          
             var userCreated = await _userManager.FindByEmailAsync(model.Email);
             if (userCreated == null)
             {
@@ -70,6 +77,7 @@ namespace BlazorSchoolApi.Services
                 UserId = userCreated.Id
 
             };
+           
             await _context.Students.AddAsync(student);
             await _userManager.AddToRoleAsync(user, roleName);
             await _context.SaveChangesAsync();

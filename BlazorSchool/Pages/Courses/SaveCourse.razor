@@ -1,9 +1,11 @@
 ﻿@page "/Course/Save/{Id:int?}"
 @attribute [Authorize]
 @using BlazorSchoolShared.Dto
+@using MudBlazor
 @inherits BaseSavePage<CourseDto>
 @inject ISnackbar Snackbar
-<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-12 pa-4 align-center justify-center ">
+@inject NavigationManager Manager
+<MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="pt-12 pa-4 align-center justify-center ">
 <EditForm Model="dto" OnValidSubmit="SubmitValidForm">
     <FluentValidationValidator />
      <MudCard xs="6" Square="true" Elevation="4">
@@ -12,6 +14,7 @@
                   @bind-Value="dto.Description" For="@(() => dto.Description)"/>
          </MudCardContent>
         <MudCardActions>
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto" OnClick="@(() => Manager.NavigateTo("/Course/List") )" >Back</MudButton>
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
         </MudCardActions>
     

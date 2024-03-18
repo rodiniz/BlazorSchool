@@ -62,6 +62,11 @@ namespace BlazorSchool.Services
         {
             await _localStorage.RemoveItemAsync("authToken");
             await _localStorage.RemoveItemAsync("email");
+
+            var resp=await _httpClient.GetAsync("/identity/logout");
+            if(!resp.IsSuccessStatusCode){
+                throw new Exception(await resp.Content.ReadAsStringAsync());
+            }
             ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
             _httpClient.DefaultRequestHeaders.Authorization = null;
         }
