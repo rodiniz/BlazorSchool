@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlazorSchoolApi.Services
 {
-    public class StudentService: ICrudService<StudentDto>
+    public class StudentService : ICrudService<StudentDto>
     {
         private readonly UserManager<IdentityUser> _userManager;
 
@@ -15,17 +15,29 @@ namespace BlazorSchoolApi.Services
 
         private readonly SchoolContext _context;
 
-        public StudentService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, SchoolContext context)
+        private readonly IEmailSenderService _emailSenderService;
+
+        private const string LowerCase = "abcdefghijklmnopqursuvwxyz";
+        private const string UpperCases = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private const string Numbers = "1234567890";
+        private static readonly Random random = new();
+
+        public StudentService(
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            SchoolContext context,
+            IEmailSenderService emailSenderService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
+            _emailSenderService = emailSenderService;
         }
 
         public async Task<IResult> Get(int id)
         {
             var student = await _context.Students.SingleOrDefaultAsync(c => c.Id == id);
-            return student == null ? TypedResults.NotFound(): 
+            return student == null ? TypedResults.NotFound() :
                     TypedResults.Ok(new StudentDto
                     {
                         Id = student.Id,
@@ -50,7 +62,9 @@ namespace BlazorSchoolApi.Services
                 Email = model.Email
             };
 
-            var result = await _userManager.CreateAsync(user);
+            string strongPassword = GenerateStrongPassword(20);
+
+            var result = await _userManager.CreateAsync(user, strongPassword);
 
             if (!result.Succeeded)
             {
@@ -59,11 +73,9 @@ namespace BlazorSchoolApi.Services
 
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            //var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
-            //var message = new Message(new string[] { user.Email }, "Confirmation email link", confirmationLink, null);
-            //clsawait _emailSender.SendEmailAsync(message);
 
-          
+
+
             var userCreated = await _userManager.FindByEmailAsync(model.Email);
             if (userCreated == null)
             {
@@ -73,11 +85,12 @@ namespace BlazorSchoolApi.Services
             {
                 Name = model.Name,
                 Address = model.Address,
-                BirthDate = model.BirthDate?? DateTime.Now,
+                BirthDate = model.BirthDate ?? DateTime.Now,
                 UserId = userCreated.Id
 
             };
-           
+            await _emailSenderService.SendEmail(model.Email, "Account created", $"Your account was created and your password is{strongPassword}");
+
             await _context.Students.AddAsync(student);
             await _userManager.AddToRoleAsync(user, roleName);
             await _context.SaveChangesAsync();
@@ -86,33 +99,33 @@ namespace BlazorSchoolApi.Services
 
         public async Task<IResult> Update(int id, StudentDto model)
         {
-          var affected= await _context.Students
-                .Where(b => b.Id ==id)
-                .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(b => b.Name, model.Name)
-                    .SetProperty(b => b.Address, model.Address)
-                    .SetProperty(b => b.BirthDate, model.BirthDate)
-                );
+            var affected = await _context.Students
+                  .Where(b => b.Id == id)
+                  .ExecuteUpdateAsync(setters => setters
+                      .SetProperty(b => b.Name, model.Name)
+                      .SetProperty(b => b.Address, model.Address)
+                      .SetProperty(b => b.BirthDate, model.BirthDate)
+                  );
 
-          return affected == 0 ? TypedResults.NotFound(): TypedResults.Ok();
+            return affected == 0 ? TypedResults.NotFound() : TypedResults.Ok();
         }
 
         public async Task<IResult> Delete(int idEntity)
         {
-            var affected= await _context.Students.Where(c => c.Id == idEntity).ExecuteDeleteAsync();
-            return affected==0? TypedResults.NotFound(): TypedResults.Ok();
+            var affected = await _context.Students.Where(c => c.Id == idEntity).ExecuteDeleteAsync();
+            return affected == 0 ? TypedResults.NotFound() : TypedResults.Ok();
         }
 
         public Task<IResult> GetAll()
         {
-             var result=_context.Students.AsNoTracking().OrderBy(c => c.Name).Select(c=> new StudentDto
-             {
-                 Id=c.Id,
-                 Name = c.Name,
-                 Address = c.Address,
-                 BirthDate = c.BirthDate
-             });
-             return Task.FromResult(Results.Ok(result));
+            var result = _context.Students.AsNoTracking().OrderBy(c => c.Name).Select(c => new StudentDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Address = c.Address,
+                BirthDate = c.BirthDate
+            });
+            return Task.FromResult(Results.Ok(result));
         }
 
         public Task<IResult> GetPaged(TableStateDto tableStateDto)
@@ -124,6 +137,30 @@ namespace BlazorSchoolApi.Services
                 BirthDate = c.BirthDate
             });
             return Task.FromResult(Results.Ok(result));
+        }
+
+        public static string GenerateStrongPassword(int passwordSize)
+        {
+            if (passwordSize < 8)
+                throw new ArgumentException("The password size must be equals or greater than 8.", nameof(passwordSize));
+
+            var numberOfLowerCase = random.Next(1, passwordSize - 4);
+            var numberOfUpperCase = random.Next(1, passwordSize - numberOfLowerCase - 2);
+            var numberOfNumbers = passwordSize - numberOfLowerCase - numberOfUpperCase;
+
+            var lowerCaseCharacters = GetRandomString(LowerCase, numberOfLowerCase);
+            var upperCaseCharacters = GetRandomString(UpperCases, numberOfUpperCase);
+            var numberCharacters = GetRandomString(Numbers, numberOfNumbers);
+
+            var password = $"{lowerCaseCharacters}{upperCaseCharacters}{numberCharacters}";
+
+            return new string(password.ToCharArray().OrderBy(_ => random.Next(2) % 2 == 0).ToArray());
+        }
+
+        private static string GetRandomString(string chars, int length)
+        {
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

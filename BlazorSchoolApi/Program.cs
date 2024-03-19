@@ -16,7 +16,7 @@ builder.Services.AddAuthorization();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c=>
+builder.Services.AddSwaggerGen(c =>
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Name = "Authorization",
@@ -50,10 +50,11 @@ builder.Services.AddCors();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddScoped<ICrudService<StudentDto>, StudentService>();
 builder.Services.AddScoped<ICrudService<CourseDto>, CourseService>();
+builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CourseValidator>();
 var app = builder.Build();
 app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
-app.MapGet("/idenity/logout",async (SignInManager<IdentityUser> manager)=> await manager.SignOutAsync());
+app.MapGet("/idenity/logout", async (SignInManager<IdentityUser> manager) => await manager.SignOutAsync());
 app.UseSwagger();
 app.UseSwaggerUI();
 
