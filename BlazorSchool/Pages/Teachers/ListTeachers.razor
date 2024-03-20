@@ -1,0 +1,23 @@
+﻿@page "/Teachers/List"
+@attribute [Authorize]
+@inject NavigationManager Manager
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="">
+    <MudPaper Class="gap-4 d-flex flex-wrap mt-5 mb-5" Elevation="0">
+        <MudButton Size="@Size.Small" Class="object-right" Style="margin-left: auto" Variant="@Variant.Filled" Color="@Color.Primary" Icon="@Icons.Material.Filled.Add" OnClick="() => NavidateToSave(null)">Create</MudButton>
+    </MudPaper>
+    <MudDataGrid Items="@Teachers">
+        <Columns>
+            <PropertyColumn Property="x => x.Name"  />
+            <PropertyColumn Property="x => x.Email"  />
+            <TemplateColumn CellClass="d-flex justify-end">
+                <CellTemplate>
+                    <MudStack Row>
+                        <MudIconButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary" Icon="@Icons.Material.Filled.Edit" OnClick="()=>NavidateToSave(context.Item.Id)">Edit</MudIconButton>
+                        <MudIconButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary" Icon="@Icons.Material.Filled.Delete" OnClick="()=>Delete(context.Item.Id)" Title="Delete"></MudIconButton>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+           
+        </Columns>
+    </MudDataGrid>
+</MudContainer>

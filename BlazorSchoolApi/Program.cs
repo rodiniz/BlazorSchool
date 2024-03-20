@@ -48,8 +48,10 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>(c =>
 
 builder.Services.AddCors();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
-builder.Services.AddScoped<ICrudService<StudentDto>, StudentService>();
-builder.Services.AddScoped<ICrudService<CourseDto>, CourseService>();
+builder.Services.AddScoped<ICrudService<StudentDto,int>, StudentService>();
+builder.Services.AddScoped<ICrudService<CourseDto,int>, CourseService>();
+builder.Services.AddScoped<ICrudService<TeacherDto,string>, TeacherService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CourseValidator>();
 var app = builder.Build();
@@ -63,6 +65,7 @@ app.UseHttpsRedirection();
 
 app.AddStudentRoutes();
 app.AddCourseRoutes();
+app.AddTeacherRoutes();
 app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()

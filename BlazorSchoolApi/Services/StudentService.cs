@@ -7,31 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlazorSchoolApi.Services
 {
-    public class StudentService : ICrudService<StudentDto>
+    public class StudentService : ICrudService<StudentDto,int>
     {
-        private readonly UserManager<IdentityUser> _userManager;
-
-        private readonly RoleManager<IdentityRole> _roleManager;
-
+        
         private readonly SchoolContext _context;
-
-        private readonly IEmailSenderService _emailSenderService;
-
-        private const string LowerCase = "abcdefghijklmnopqursuvwxyz";
-        private const string UpperCases = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        private const string Numbers = "1234567890";
-        private static readonly Random random = new();
-
+        
+        private readonly IUserService _userService;
         public StudentService(
-            UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager,
             SchoolContext context,
-            IEmailSenderService emailSenderService)
+            IUserService userService)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
+        
             _context = context;
-            _emailSenderService = emailSenderService;
+            _userService = userService;
         }
 
         public async Task<IResult> Get(int id)
@@ -49,35 +37,8 @@ namespace BlazorSchoolApi.Services
 
         public async Task<IResult> Create(StudentDto model)
         {
-            const string roleName = "Student";
-            var roleExists = await _roleManager.RoleExistsAsync(roleName);
-            if (!roleExists)
-            {
-                await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
-            }
-
-            var user = new IdentityUser
-            {
-                UserName = model.Email,
-                Email = model.Email
-            };
-
-            string strongPassword = GenerateStrongPassword(20);
-
-            var result = await _userManager.CreateAsync(user, strongPassword);
-
-            if (!result.Succeeded)
-            {
-                return TypedResults.BadRequest(result.Errors);
-            }
-
-
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-
-
-            var userCreated = await _userManager.FindByEmailAsync(model.Email);
-            if (userCreated == null)
+            var id= await _userService.CreateUser(model.Email,model.Name,"Student");
+            if (string.IsNullOrEmpty(id))
             {
                 return TypedResults.BadRequest();
             }
@@ -86,13 +47,9 @@ namespace BlazorSchoolApi.Services
                 Name = model.Name,
                 Address = model.Address,
                 BirthDate = model.BirthDate ?? DateTime.Now,
-                UserId = userCreated.Id
-
+                UserId = id
             };
-            await _emailSenderService.SendEmail(model.Email, "Account created", $"Your account was created and your password is{strongPassword}");
-
             await _context.Students.AddAsync(student);
-            await _userManager.AddToRoleAsync(user, roleName);
             await _context.SaveChangesAsync();
             return TypedResults.Created();
         }
@@ -139,28 +96,6 @@ namespace BlazorSchoolApi.Services
             return Task.FromResult(Results.Ok(result));
         }
 
-        public static string GenerateStrongPassword(int passwordSize)
-        {
-            if (passwordSize < 8)
-                throw new ArgumentException("The password size must be equals or greater than 8.", nameof(passwordSize));
-
-            var numberOfLowerCase = random.Next(1, passwordSize - 4);
-            var numberOfUpperCase = random.Next(1, passwordSize - numberOfLowerCase - 2);
-            var numberOfNumbers = passwordSize - numberOfLowerCase - numberOfUpperCase;
-
-            var lowerCaseCharacters = GetRandomString(LowerCase, numberOfLowerCase);
-            var upperCaseCharacters = GetRandomString(UpperCases, numberOfUpperCase);
-            var numberCharacters = GetRandomString(Numbers, numberOfNumbers);
-
-            var password = $"{lowerCaseCharacters}{upperCaseCharacters}{numberCharacters}";
-
-            return new string(password.ToCharArray().OrderBy(_ => random.Next(2) % 2 == 0).ToArray());
-        }
-
-        private static string GetRandomString(string chars, int length)
-        {
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
+       
     }
 }

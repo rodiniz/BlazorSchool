@@ -10,14 +10,14 @@ namespace BlazorSchoolApi.Routes
         {
             var group = app.MapGroup("/Course").RequireAuthorization();
             group.MapPost("/", async (
-                    [FromServices] ICrudService<CourseDto> service,
+                    [FromServices] ICrudService<CourseDto,int> service,
                     [FromBody] CourseDto courseDto) => await service.Create(courseDto))
                 .WithOpenApi();
 
-            group.MapGet("/", ([FromServices] ICrudService<CourseDto> courseService) => courseService.GetAll());
-            group.MapGet("/{id}", async ([FromServices] ICrudService<CourseDto> studentService, int id) => await studentService.Get(id));
-            group.MapPut("/{id}", async ([FromServices] ICrudService<CourseDto> courseService, int id, [FromBody] CourseDto courseDto) => await courseService.Update(id,courseDto));
-            group.MapDelete("/{id}", async ([FromServices] ICrudService<CourseDto> courseService, int id) => await courseService.Delete(id));
+            group.MapGet("/", ([FromServices] ICrudService<CourseDto,int> courseService) => courseService.GetAll());
+            group.MapGet("/{id}", async ([FromServices] ICrudService<CourseDto,int> studentService, int id) => await studentService.Get(id));
+            group.MapPut("/{id}", async ([FromServices] ICrudService<CourseDto,int> courseService, int id, [FromBody] CourseDto courseDto) => await courseService.Update(id,courseDto));
+            group.MapDelete("/{id}", async ([FromServices] ICrudService<CourseDto,int> courseService, int id) => await courseService.Delete(id));
         }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlazorSchoolApi.Services
 {
-    public class CourseService : ICrudService<CourseDto>
+    public class CourseService : ICrudService<CourseDto,int>
     {
         private readonly SchoolContext _context;
         private readonly IValidator<CourseDto> _validator;

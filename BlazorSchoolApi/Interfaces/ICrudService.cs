@@ -2,15 +2,15 @@
 
 namespace BlazorSchoolApi.Interfaces
 {
-    public interface ICrudService<T>
+    public interface ICrudService<T,Key>
     {
-        Task<IResult> Get(int id);
+        Task<IResult> Get(Key id);
 
         Task<IResult> Create(T model);
 
-        Task<IResult> Update(int id,T model);
+        Task<IResult> Update(Key id,T model);
 
-        Task<IResult> Delete(int idEntity);
+        Task<IResult> Delete(Key idEntity);
 
         Task<IResult> GetAll();
 
