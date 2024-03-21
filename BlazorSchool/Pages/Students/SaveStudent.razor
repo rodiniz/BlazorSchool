@@ -1,34 +1,31 @@
 ﻿@page "/Student/Save/{Id:int?}"
 @attribute [Authorize]
 @using BlazorSchoolShared.Dto
-@using Blazored.FluentValidation
-@using Microsoft.AspNetCore.Components.Forms
-@using MudBlazor
 @inherits BaseSavePage<StudentDto>
 @inject ISnackbar Snackbar
 @inject NavigationManager Manager
 <MudContainer MaxWidth="MaxWidth.Small" Class="pt-12 pa-4 align-center justify-center ">
 <EditForm Model="dto" OnValidSubmit="SubmitValidForm">
     <FluentValidationValidator />
-     <MudCard xs="6" Square="true" Elevation="4">
-         <MudCardContent>
-                 <MudTextField Label="E-Mail"
-                  @bind-Value="dto.Email" For="@(() => dto.Email)"/>
-                <MudTextField Label="Name"
-                              @bind-Value="dto.Name" For="@(() => dto.Name)" />           
+    <MudCard xs="6" Square="true" Elevation="4">
+        <MudCardContent>
+            <MudTextField Label="E-Mail"
+                          @bind-Value="dto.Email" For="@(() => dto.Email)" ReadOnly="@Id.HasValue"/>
+            <MudTextField Label="Name"
+                          @bind-Value="dto.Name" For="@(() => dto.Name)"/>
 
-                <MudTextField Label="Address"
-                              @bind-Value="dto.Address" For="@(() => dto.Address)" />
-              
+            <MudTextField Label="Address"
+                          @bind-Value="dto.Address" For="@(() => dto.Address)"/>
 
-                <MudDatePicker Label="BirthDate" @bind-Date="dto.BirthDate" For="@(() => dto.BirthDate)"/>
-         </MudCardContent>
+
+            <MudDatePicker Label="BirthDate" @bind-Date="dto.BirthDate" For="@(() => dto.BirthDate)"/>
+        </MudCardContent>
         <MudCardActions>
-                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="" OnClick="@(() => Manager.NavigateTo("/Students/List") )" >Back</MudButton>
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="" OnClick="@(() => Manager.NavigateTo("/Students/List"))">Back</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
         </MudCardActions>
-    
-   
+
+
     </MudCard>
 </EditForm>
 </MudContainer>

@@ -27,7 +27,7 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<string?> CreateUser(string email,string userName, string roleName)
+    public async Task<string?> CreateUser(string? email,string? userName, string roleName)
     {
         var roleExists = await _roleManager.RoleExistsAsync(roleName);
         if (!roleExists)
@@ -35,7 +35,7 @@ public class UserService : IUserService
             await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
         }
 
-        var user = new IdentityUser{Email = email, UserName = userName};
+        var user = new IdentityUser{Email = email, UserName = email};
         var strongPassword = GenerateStrongPassword(12);
         var result=await _userManager.CreateAsync(user,strongPassword);
         if (!result.Succeeded)
@@ -56,6 +56,12 @@ public class UserService : IUserService
         //await _emailSenderService.SendEmail(email, "Account created", $"Your account was created and your password is {strongPassword}");
         
         return userCreated?.Id;
+    }
+
+    public async Task<string?> GetUserEmail(string userId)
+    {
+        var userCreated = await _userManager.FindByIdAsync(userId);
+        return userCreated.Email;
     }
 
     private static string GenerateStrongPassword(int passwordSize)

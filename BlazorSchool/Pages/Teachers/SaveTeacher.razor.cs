@@ -13,7 +13,7 @@ public partial class SaveTeacher
             _Manager.NavigateTo("/Teachers/List");
         }
         else{
-            Snackbar.Add("Error saving  student", Severity.Error);
+            Snackbar.Add("Error saving  teacher", Severity.Error);
         }
     }
 }

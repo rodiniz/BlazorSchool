@@ -27,7 +27,7 @@ public class TeacherService:ICrudService<TeacherDto,string>
 
     public async Task<IResult> Create(TeacherDto model)
     {
-        var id= await _userService.CreateUser(model.Email,model.Name,"Teacher");
+        var id= await _userService.CreateUser(model.Email,model.Email,"Teacher");
         if (string.IsNullOrEmpty(id))
         {
             return TypedResults.BadRequest();

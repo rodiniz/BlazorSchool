@@ -2,7 +2,6 @@
 using BlazorSchoolApi.Interfaces;
 using BlazorSchoolShared;
 using BlazorSchoolShared.Dto;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorSchoolApi.Services
@@ -73,16 +72,19 @@ namespace BlazorSchoolApi.Services
             return affected == 0 ? TypedResults.NotFound() : TypedResults.Ok();
         }
 
-        public Task<IResult> GetAll()
+        public async Task<IResult> GetAll()
         {
-            var result = _context.Students.AsNoTracking().OrderBy(c => c.Name).Select(c => new StudentDto
+            var result = _context.Students.AsNoTracking()
+                .OrderBy(c => c.Name)
+                .Select(async c => new StudentDto
             {
                 Id = c.Id,
                 Name = c.Name,
                 Address = c.Address,
-                BirthDate = c.BirthDate
+                BirthDate = c.BirthDate,
+                Email = await _userService.GetUserEmail(c.UserId)
             });
-            return Task.FromResult(Results.Ok(result));
+            return TypedResults.Ok(result);
         }
 
         public Task<IResult> GetPaged(TableStateDto tableStateDto)
