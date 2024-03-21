@@ -33,3 +33,8 @@ jobs:
           password: ${{ secrets.FTP_PASS }}
           local-dir: publish_output/
           server-dir: wwwroot/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/runtimes/**

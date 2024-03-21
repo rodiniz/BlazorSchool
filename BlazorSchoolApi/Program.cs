@@ -59,7 +59,11 @@ app.MapGet("/idenity/logout", async (SignInManager<ApplicationUser> manager) => 
 app.UseSwagger();
 app.UseSwaggerUI();
 
-
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<SchoolContext>();
+    dataContext.Database.Migrate();
+}
 app.UseHttpsRedirection();
 
 app.AddStudentRoutes();
