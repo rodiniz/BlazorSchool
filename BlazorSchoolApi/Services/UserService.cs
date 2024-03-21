@@ -65,6 +65,7 @@ public class UserService : IUserService
 
     public async Task<ApplicationUser> GetUserById(string userId)
     {
+
         var userCreated = await _userManager.FindByIdAsync(userId);
         return userCreated;
     }

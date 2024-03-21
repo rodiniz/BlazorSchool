@@ -28,14 +28,20 @@ namespace BlazorSchoolApi.Services
 
         public async Task<IResult> Get(string id)
         {
-            var user = await _userService.GetUserById(id);
+            var user = await (from u in _context.Users
+                               join ur in _context.UserRoles on u.Id equals ur.UserId
+                               join ro in _context.Roles on ur.RoleId equals ro.Id
+                               select new { u.Id, u.Email, u.Name, RoleName = ro.Name, u.Address, u.BirthDate })
+                               .SingleOrDefaultAsync(c => c.Id == id);
             return user == null ? TypedResults.NotFound() :
                     TypedResults.Ok(new UserDto
                     {
                         Id = user.Id,
                         Name = user.Name,
                         Address = user.Address,
-                        BirthDate = user.BirthDate
+                        BirthDate = user.BirthDate,
+                        RoleName = user.RoleName,
+                        Email=user.Email
                     });
         }
 
@@ -47,7 +53,8 @@ namespace BlazorSchoolApi.Services
                 Email = model.Email,
                 Name = model.Name,
                 Address = model.Address,
-                UserName = model.Email
+                UserName = model.Email,
+                BirthDate=model.BirthDate
             },model.RoleName);
             if (string.IsNullOrEmpty(id))
             {
@@ -58,14 +65,19 @@ namespace BlazorSchoolApi.Services
 
         public async Task<IResult> Update(string id, UserDto model)
         {
-            var user = new ApplicationUser
-            {
-                Id = id,
-                UserName = model.Name,
-                Email = model.Email
-            };
-            var result= await _userManager.UpdateAsync(user);
-            return result.Succeeded ? TypedResults.Ok() : TypedResults.BadRequest(result.Errors);
+            //var result = await _validator.ValidateAsync(model);
+            //if (!result.IsValid)
+            //{
+            //    return TypedResults.BadRequest(result.Errors);
+            //}
+           var affected= await _context.Users
+                .Where(b => b.Id == id)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(b => b.Address, model.Address)
+                    .SetProperty(b => b.BirthDate, model.BirthDate)
+                    .SetProperty(b => b.Name, model.Name)
+                );
+            return affected==1? TypedResults.Ok() :TypedResults.BadRequest();
         }
 
         public async Task<IResult> Delete(string idEntity)
