@@ -49,13 +49,13 @@ builder.Services.AddIdentityApiEndpoints<ApplicationUser>(c =>
 builder.Services.AddCors();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddScoped<ICrudService<CourseDto,int>, CourseService>();
-builder.Services.AddScoped<ICrudService<TeacherDto,string>, TeacherService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICrudService<UserDto,string>, UserCrudService>();
 builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CourseValidator>();
 var app = builder.Build();
 app.MapGroup("/identity").MapIdentityApi<ApplicationUser>();
-app.MapGet("/idenity/logout", async (SignInManager<ApplicationUser> manager) => await manager.SignOutAsync());
+app.MapGet("/identity/logout", async (SignInManager<ApplicationUser> manager) => await manager.SignOutAsync());
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -68,7 +68,7 @@ app.UseHttpsRedirection();
 
 app.AddStudentRoutes();
 app.AddCourseRoutes();
-app.AddTeacherRoutes();
+
 app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()

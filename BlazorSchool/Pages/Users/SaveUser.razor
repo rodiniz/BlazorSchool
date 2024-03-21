@@ -1,7 +1,7 @@
 ﻿@page "/Student/Save/{Id:int?}"
 @attribute [Authorize]
 @using BlazorSchoolShared.Dto
-@inherits BaseSavePage<StudentDto>
+@inherits BaseSavePage<UserDto>
 @inject ISnackbar Snackbar
 @inject NavigationManager Manager
 <MudContainer MaxWidth="MaxWidth.Small" Class="pt-12 pa-4 align-center justify-center ">
@@ -19,6 +19,11 @@
 
 
             <MudDatePicker Label="BirthDate" @bind-Date="dto.BirthDate" For="@(() => dto.BirthDate)"/>
+            
+            <MudSelect T="string" Label="Role" @bind-Value="dto.RoleName">
+                <MudSelectItem Value="@("Teacher")" />
+                <MudSelectItem Value="@("Student")" />
+            </MudSelect>
         </MudCardContent>
         <MudCardActions>
             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="" OnClick="@(() => Manager.NavigateTo("/Students/List"))">Back</MudButton>

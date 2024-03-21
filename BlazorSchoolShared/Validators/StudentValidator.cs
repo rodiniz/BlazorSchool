@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace BlazorSchoolShared.Validators
 {
-    public class StudentValidator :AbstractValidator<StudentDto>
+    public class StudentValidator :AbstractValidator<UserDto>
     {
         public StudentValidator()
         {

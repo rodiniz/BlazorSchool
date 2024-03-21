@@ -9,11 +9,11 @@ namespace BlazorSchool.Pages.Users
     {
         [Inject] private HttpClient HttpClient { get; set; }
         [Inject] private IDialogService DialogService { get; set; }
-        public List<StudentDto>? Students { get; set; }
+        public List<UserDto>? Students { get; set; }
         
         protected override async Task OnInitializedAsync()
         {
-            Students= await HttpClient.GetFromJsonAsync<List<StudentDto>>("Users");
+            Students= await HttpClient.GetFromJsonAsync<List<UserDto>>("Users");
         }
         public void NavidateToSave(string id)
         {
@@ -29,7 +29,7 @@ namespace BlazorSchool.Pages.Users
             if (result.HasValue)
             {
                 await HttpClient.DeleteAsync($"Users/{id}");
-                Students= await HttpClient.GetFromJsonAsync<List<StudentDto>>("Users");
+                Students= await HttpClient.GetFromJsonAsync<List<UserDto>>("Users");
             }    
         }
     }

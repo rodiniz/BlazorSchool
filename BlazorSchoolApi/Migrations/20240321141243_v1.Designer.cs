@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorSchoolApi.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    [Migration("20240321100913_v1")]
+    [Migration("20240321141243_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -34,10 +34,9 @@ namespace BlazorSchoolApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("BirthDate")
+                    b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -58,7 +57,6 @@ namespace BlazorSchoolApi.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")

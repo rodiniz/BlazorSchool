@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlazorSchoolApi.Services
 {
-    public class StudentService : ICrudService<StudentDto,string>
+    public class UserCrudService : ICrudService<UserDto,string>
     {
         
         private readonly SchoolContext _context;
@@ -15,7 +15,7 @@ namespace BlazorSchoolApi.Services
         private readonly IUserService _userService;
         
         private readonly UserManager<ApplicationUser> _userManager;
-        public StudentService(
+        public UserCrudService(
             SchoolContext context,
             IUserService userService,
             UserManager<ApplicationUser> userManager)
@@ -28,26 +28,27 @@ namespace BlazorSchoolApi.Services
 
         public async Task<IResult> Get(string id)
         {
-            var student = await _userService.GetUserById(id);
-            return student == null ? TypedResults.NotFound() :
-                    TypedResults.Ok(new StudentDto
+            var user = await _userService.GetUserById(id);
+            return user == null ? TypedResults.NotFound() :
+                    TypedResults.Ok(new UserDto
                     {
-                        Id = student.Id,
-                        Name = student.Name,
-                        Address = student.Address,
-                        BirthDate = student.BirthDate
+                        Id = user.Id,
+                        Name = user.Name,
+                        Address = user.Address,
+                        BirthDate = user.BirthDate
                     });
         }
 
-        public async Task<IResult> Create(StudentDto model)
+        public async Task<IResult> Create(UserDto model)
         {
            
             var id= await _userService.CreateUser( new ApplicationUser
             {
                 Email = model.Email,
                 Name = model.Name,
-                Address = model.Address
-            },"Student");
+                Address = model.Address,
+                UserName = model.Email
+            },model.RoleName);
             if (string.IsNullOrEmpty(id))
             {
                 return TypedResults.BadRequest();
@@ -55,7 +56,7 @@ namespace BlazorSchoolApi.Services
             return TypedResults.Created();
         }
 
-        public async Task<IResult> Update(string id, StudentDto model)
+        public async Task<IResult> Update(string id, UserDto model)
         {
             var user = new ApplicationUser
             {
@@ -79,15 +80,20 @@ namespace BlazorSchoolApi.Services
 
         public async Task<IResult> GetAll()
         {
-            var users = await _userManager.GetUsersInRoleAsync("Teacher");
+            var users = await (from u in  _context.Users
+                join ur in _context.UserRoles on  u.Id equals ur.UserId
+                join ro in _context.Roles on ur.RoleId equals ro.Id
+                select new { u.Id, u.Email, u.Name,RoleName= ro.Name ,u.Address,u.BirthDate})
+                .ToListAsync();
             return TypedResults.Ok(
                 users.Select(c => 
-                    new TeacherDto { 
+                    new UserDto { 
                         Id = c.Id, 
                         Email = c.Email, 
                         Name = c.Name,
                         Address = c.Address,
-                        BirthDate = c.BirthDate
+                        BirthDate = c.BirthDate,
+                        RoleName = c.RoleName
                     }));
         }
 
