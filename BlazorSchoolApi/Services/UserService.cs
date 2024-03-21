@@ -1,11 +1,12 @@
-﻿using BlazorSchoolApi.Interfaces;
+﻿using BlazorSchoolApi.Data;
+using BlazorSchoolApi.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace BlazorSchoolApi.Services;
 
 public class UserService : IUserService
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IEmailSenderService _emailSenderService;
     private readonly ILogger<UserService> _logger;
@@ -17,7 +18,7 @@ public class UserService : IUserService
     
 
     public UserService(
-        UserManager<IdentityUser> userManager, 
+        UserManager<ApplicationUser> userManager, 
         RoleManager<IdentityRole> roleManager,
         IEmailSenderService emailSenderService, ILogger<UserService> logger)
     {
@@ -27,15 +28,13 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<string?> CreateUser(string? email,string? userName, string roleName)
+    public async Task<string?> CreateUser(ApplicationUser user, string roleName)
     {
         var roleExists = await _roleManager.RoleExistsAsync(roleName);
         if (!roleExists)
         {
             await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
         }
-
-        var user = new IdentityUser{Email = email, UserName = email};
         var strongPassword = GenerateStrongPassword(12);
         var result=await _userManager.CreateAsync(user,strongPassword);
         if (!result.Succeeded)
@@ -45,7 +44,7 @@ public class UserService : IUserService
         }
         //var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-        var userCreated = await _userManager.FindByEmailAsync(email);
+        var userCreated = await _userManager.FindByEmailAsync(user.Email);
 
         result=await _userManager.AddToRoleAsync(userCreated, roleName);
         if (!result.Succeeded)
@@ -62,6 +61,12 @@ public class UserService : IUserService
     {
         var userCreated = await _userManager.FindByIdAsync(userId);
         return userCreated.Email;
+    }
+
+    public async Task<ApplicationUser> GetUserById(string userId)
+    {
+        var userCreated = await _userManager.FindByIdAsync(userId);
+        return userCreated;
     }
 
     private static string GenerateStrongPassword(int passwordSize)

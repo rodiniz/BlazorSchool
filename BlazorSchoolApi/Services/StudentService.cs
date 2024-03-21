@@ -2,28 +2,33 @@
 using BlazorSchoolApi.Interfaces;
 using BlazorSchoolShared;
 using BlazorSchoolShared.Dto;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorSchoolApi.Services
 {
-    public class StudentService : ICrudService<StudentDto,int>
+    public class StudentService : ICrudService<StudentDto,string>
     {
         
         private readonly SchoolContext _context;
         
         private readonly IUserService _userService;
+        
+        private readonly UserManager<ApplicationUser> _userManager;
         public StudentService(
             SchoolContext context,
-            IUserService userService)
+            IUserService userService,
+            UserManager<ApplicationUser> userManager)
         {
         
             _context = context;
             _userService = userService;
+            _userManager = userManager;
         }
 
-        public async Task<IResult> Get(int id)
+        public async Task<IResult> Get(string id)
         {
-            var student = await _context.Students.SingleOrDefaultAsync(c => c.Id == id);
+            var student = await _userService.GetUserById(id);
             return student == null ? TypedResults.NotFound() :
                     TypedResults.Ok(new StudentDto
                     {
@@ -36,66 +41,59 @@ namespace BlazorSchoolApi.Services
 
         public async Task<IResult> Create(StudentDto model)
         {
-            var id= await _userService.CreateUser(model.Email,model.Name,"Student");
+           
+            var id= await _userService.CreateUser( new ApplicationUser
+            {
+                Email = model.Email,
+                Name = model.Name,
+                Address = model.Address
+            },"Student");
             if (string.IsNullOrEmpty(id))
             {
                 return TypedResults.BadRequest();
             }
-            var student = new Student
-            {
-                Name = model.Name,
-                Address = model.Address,
-                BirthDate = model.BirthDate ?? DateTime.Now,
-                UserId = id
-            };
-            await _context.Students.AddAsync(student);
-            await _context.SaveChangesAsync();
             return TypedResults.Created();
         }
 
-        public async Task<IResult> Update(int id, StudentDto model)
+        public async Task<IResult> Update(string id, StudentDto model)
         {
-            var affected = await _context.Students
-                  .Where(b => b.Id == id)
-                  .ExecuteUpdateAsync(setters => setters
-                      .SetProperty(b => b.Name, model.Name)
-                      .SetProperty(b => b.Address, model.Address)
-                      .SetProperty(b => b.BirthDate, model.BirthDate)
-                  );
-
-            return affected == 0 ? TypedResults.NotFound() : TypedResults.Ok();
+            var user = new ApplicationUser
+            {
+                Id = id,
+                UserName = model.Name,
+                Email = model.Email
+            };
+            var result= await _userManager.UpdateAsync(user);
+            return result.Succeeded ? TypedResults.Ok() : TypedResults.BadRequest(result.Errors);
         }
 
-        public async Task<IResult> Delete(int idEntity)
+        public async Task<IResult> Delete(string idEntity)
         {
-            var affected = await _context.Students.Where(c => c.Id == idEntity).ExecuteDeleteAsync();
-            return affected == 0 ? TypedResults.NotFound() : TypedResults.Ok();
+            var user = new ApplicationUser
+            {
+                Id = idEntity
+            };
+            var result= await _userManager.DeleteAsync(user);
+            return result.Succeeded ? TypedResults.Ok() : TypedResults.BadRequest(result.Errors);
         }
 
         public async Task<IResult> GetAll()
         {
-            var result = _context.Students.AsNoTracking()
-                .OrderBy(c => c.Name)
-                .Select(async c => new StudentDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Address = c.Address,
-                BirthDate = c.BirthDate,
-                Email = await _userService.GetUserEmail(c.UserId)
-            });
-            return TypedResults.Ok(result);
+            var users = await _userManager.GetUsersInRoleAsync("Teacher");
+            return TypedResults.Ok(
+                users.Select(c => 
+                    new TeacherDto { 
+                        Id = c.Id, 
+                        Email = c.Email, 
+                        Name = c.Name,
+                        Address = c.Address,
+                        BirthDate = c.BirthDate
+                    }));
         }
 
         public Task<IResult> GetPaged(TableStateDto tableStateDto)
         {
-            var result = _context.Students.AsNoTracking().OrderBy(c => c.Name).Select(c => new StudentDto
-            {
-                Name = c.Name,
-                Address = c.Address,
-                BirthDate = c.BirthDate
-            });
-            return Task.FromResult(Results.Ok(result));
+            return Task.FromResult<IResult>(TypedResults.Ok());
         }
 
        

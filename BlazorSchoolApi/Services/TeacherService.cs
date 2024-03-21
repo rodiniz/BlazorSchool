@@ -10,10 +10,10 @@ namespace BlazorSchoolApi.Services;
 public class TeacherService:ICrudService<TeacherDto,string>
 {
     private readonly IUserService _userService;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     
     public TeacherService(
-        UserManager<IdentityUser> userManager, 
+        UserManager<ApplicationUser> userManager, 
         IUserService userService)
     {
         _userManager = userManager;
@@ -27,7 +27,12 @@ public class TeacherService:ICrudService<TeacherDto,string>
 
     public async Task<IResult> Create(TeacherDto model)
     {
-        var id= await _userService.CreateUser(model.Email,model.Email,"Teacher");
+        var id= await _userService.CreateUser( new ApplicationUser
+        {
+            Email = model.Email,
+            Name = model.Name,
+            Address = model.Address
+        },"Teacher");
         if (string.IsNullOrEmpty(id))
         {
             return TypedResults.BadRequest();
@@ -37,7 +42,7 @@ public class TeacherService:ICrudService<TeacherDto,string>
 
     public async Task<IResult> Update(string id, TeacherDto model)
     {
-        var user = new IdentityUser
+        var user = new ApplicationUser
         {
             Id = id,
             UserName = model.Name,
@@ -49,7 +54,7 @@ public class TeacherService:ICrudService<TeacherDto,string>
 
     public async Task<IResult> Delete(string idEntity)
     {
-        var user = new IdentityUser
+        var user = new ApplicationUser
         {
             Id = idEntity
         };
@@ -65,7 +70,7 @@ public class TeacherService:ICrudService<TeacherDto,string>
                 new TeacherDto { 
                     Id = c.Id, 
                     Email = c.Email, 
-                    Name = c.UserName 
+                    Name = c.Name
                 }));
     }
 

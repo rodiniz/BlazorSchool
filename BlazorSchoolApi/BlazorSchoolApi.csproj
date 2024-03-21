@@ -31,4 +31,12 @@
     <ProjectReference Include="..\BlazorSchoolShared\BlazorSchoolShared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Migrations\20240307152608_v2.cs" />
+    <Compile Remove="Migrations\20240307152608_v2.Designer.cs" />
+    <Compile Remove="Migrations\20240308123750_v3.cs" />
+    <Compile Remove="Migrations\20240308123750_v3.Designer.cs" />
+    <Compile Remove="Migrations\SchoolContextModelSnapshot.cs" />
+  </ItemGroup>
+
 </Project>

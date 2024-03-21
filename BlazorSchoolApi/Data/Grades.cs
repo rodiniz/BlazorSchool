@@ -6,7 +6,7 @@ namespace BlazorSchoolApi.Data
     {
         public int Id { get; set; }
         public virtual StudentTests StudentTests { get; set; }
-        public virtual Student Student { get; set; }
+        public virtual ApplicationUser Student { get; set; }
         public string Score { get; set; }  
     }
 }

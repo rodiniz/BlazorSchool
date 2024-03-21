@@ -15,14 +15,14 @@ namespace BlazorSchool.Pages.Students
         {
             Students= await HttpClient.GetFromJsonAsync<List<StudentDto>>("Student");
         }
-        public void NavidateToSave(int? id)
+        public void NavidateToSave(string id)
         {
             Manager.NavigateTo($"/Student/Save/{id}");
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(string id)
         {
-            bool? result = await DialogService.ShowMessageBox(
+            var result = await DialogService.ShowMessageBox(
                 "Warning", 
                 "Are you sure you want to delete?",
                 yesText:"Yes", noText:"No");

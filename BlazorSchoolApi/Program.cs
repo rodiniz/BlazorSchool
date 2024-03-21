@@ -31,7 +31,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<SchoolContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentityApiEndpoints<IdentityUser>(c =>
+builder.Services.AddIdentityApiEndpoints<ApplicationUser>(c =>
 {
 
     c.Password.RequireDigit = false;
@@ -43,20 +43,19 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>(c =>
 
 }).AddRoles<IdentityRole>()
     .AddRoleManager<RoleManager<IdentityRole>>()
-    .AddUserManager<UserManager<IdentityUser>>()
+    .AddUserManager<UserManager<ApplicationUser>>()
     .AddEntityFrameworkStores<SchoolContext>();
 
 builder.Services.AddCors();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
-builder.Services.AddScoped<ICrudService<StudentDto,int>, StudentService>();
 builder.Services.AddScoped<ICrudService<CourseDto,int>, CourseService>();
 builder.Services.AddScoped<ICrudService<TeacherDto,string>, TeacherService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CourseValidator>();
 var app = builder.Build();
-app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
-app.MapGet("/idenity/logout", async (SignInManager<IdentityUser> manager) => await manager.SignOutAsync());
+app.MapGroup("/identity").MapIdentityApi<ApplicationUser>();
+app.MapGet("/idenity/logout", async (SignInManager<ApplicationUser> manager) => await manager.SignOutAsync());
 app.UseSwagger();
 app.UseSwaggerUI();
 

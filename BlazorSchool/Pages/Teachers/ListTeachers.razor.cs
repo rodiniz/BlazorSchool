@@ -20,7 +20,7 @@ public partial class ListTeachers
         Manager.NavigateTo($"/Teachers/Save/{id}");
     }
 
-    public async Task Delete(string id)
+    public async Task Delete(string? id)
     {
         bool? result = await DialogService.ShowMessageBox(
             "Warning", 
