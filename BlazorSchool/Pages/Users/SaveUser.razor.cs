@@ -2,19 +2,19 @@
 
 using MudBlazor;
 
-namespace BlazorSchool.Pages.Students
+namespace BlazorSchool.Pages.Users
 {
     
-    public partial class SaveStudent
+    public partial class SaveUser
     {
-        public SaveStudent():base("Student")
+        public SaveUser():base("Users")
         {
             
         }
         private async Task SubmitValidForm()
         {
            if(await Save()){
-            _Manager.NavigateTo("/Students/List");
+            _Manager.NavigateTo("/Users/List");
            }
             else{
                 Snackbar.Add("Error saving  student", Severity.Error);

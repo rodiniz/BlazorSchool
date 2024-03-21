@@ -3,9 +3,9 @@ using BlazorSchoolShared.Dto;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace BlazorSchool.Pages.Students
+namespace BlazorSchool.Pages.Users
 {
-    public partial class ListStudents
+    public partial class ListUsers
     {
         [Inject] private HttpClient HttpClient { get; set; }
         [Inject] private IDialogService DialogService { get; set; }
@@ -13,11 +13,11 @@ namespace BlazorSchool.Pages.Students
         
         protected override async Task OnInitializedAsync()
         {
-            Students= await HttpClient.GetFromJsonAsync<List<StudentDto>>("Student");
+            Students= await HttpClient.GetFromJsonAsync<List<StudentDto>>("Users");
         }
         public void NavidateToSave(string id)
         {
-            Manager.NavigateTo($"/Student/Save/{id}");
+            Manager.NavigateTo($"/Users/Save/{id}");
         }
 
         public async Task Delete(string id)
@@ -28,8 +28,8 @@ namespace BlazorSchool.Pages.Students
                 yesText:"Yes", noText:"No");
             if (result.HasValue)
             {
-                await HttpClient.DeleteAsync($"Student/{id}");
-                Students= await HttpClient.GetFromJsonAsync<List<StudentDto>>("Student");
+                await HttpClient.DeleteAsync($"Users/{id}");
+                Students= await HttpClient.GetFromJsonAsync<List<StudentDto>>("Users");
             }    
         }
     }

@@ -20,4 +20,9 @@
     <ProjectReference Include="..\BlazorSchoolShared\BlazorSchoolShared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Teachers\ListTeachers.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Teachers\SaveTeacher.razor" />
+  </ItemGroup>
+
 </Project>
