@@ -1,5 +1,4 @@
 ﻿@page "/CourseCycle/List"
-<h3>ListCourseCycle</h3>
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="">
     <MudPaper Class="gap-4 d-flex flex-wrap mt-5 mb-5" Elevation="0">
@@ -9,7 +8,7 @@
         <Columns>
             <PropertyColumn Property="x => x.CourseName"  />
             <PropertyColumn Property="x => x.Year"  />
-            <PropertyColumn Property="x => x.TeacherName"  />
+            <PropertyColumn Property="x => x.TeacherName" Title="Teacher Name" />
             <TemplateColumn CellClass="d-flex justify-end">
                 <CellTemplate>
                     <MudStack Row>

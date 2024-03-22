@@ -12,13 +12,6 @@ public class UserService : IUserService
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly ILogger<UserService> _logger;
     private readonly SchoolContext _context;
-    
-    private static readonly Random Random = new();
-    private const string LowerCase = "abcdefghijklmnopqursuvwxyz";
-    private const string UpperCases = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private const string Numbers = "1234567890";
-    
-
     public UserService(
         UserManager<ApplicationUser> userManager, 
         RoleManager<IdentityRole> roleManager,
@@ -38,7 +31,7 @@ public class UserService : IUserService
         {
             await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
         }
-        var strongPassword = GenerateStrongPassword(12);
+        var strongPassword = PasswordHelper.GenerateStrongPassword(12);
         var result=await _userManager.CreateAsync(user,strongPassword);
         if (!result.Succeeded)
         {
@@ -68,7 +61,6 @@ public class UserService : IUserService
 
     public async Task<ApplicationUser> GetUserById(string userId)
     {
-
         var userCreated = await _userManager.FindByIdAsync(userId);
         return userCreated;
     }
@@ -91,29 +83,5 @@ public class UserService : IUserService
                         BirthDate = c.BirthDate,
                         RoleName = c.RoleName
                     }));
-    }
-
-    private static string GenerateStrongPassword(int passwordSize)
-    {
-        if (passwordSize < 8)
-            throw new ArgumentException("The password size must be equals or greater than 8.", nameof(passwordSize));
-
-        var numberOfLowerCase = Random.Next(1, passwordSize - 4);
-        var numberOfUpperCase = Random.Next(1, passwordSize - numberOfLowerCase - 2);
-        var numberOfNumbers = passwordSize - numberOfLowerCase - numberOfUpperCase;
-
-        var lowerCaseCharacters = GetRandomString(LowerCase, numberOfLowerCase);
-        var upperCaseCharacters = GetRandomString(UpperCases, numberOfUpperCase);
-        var numberCharacters = GetRandomString(Numbers, numberOfNumbers);
-
-        var password = $"{lowerCaseCharacters}{upperCaseCharacters}{numberCharacters}";
-
-        return new string(password.ToCharArray().OrderBy(_ => Random.Next(2) % 2 == 0).ToArray());
-    }
-
-    private static string GetRandomString(string chars, int length)
-    {
-        return new string(Enumerable.Repeat(chars, length)
-            .Select(s => s[Random.Next(s.Length)]).ToArray());
     }
 }

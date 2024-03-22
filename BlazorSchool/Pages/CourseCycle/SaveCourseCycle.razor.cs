@@ -6,8 +6,8 @@ namespace BlazorSchool.Pages.CourseCycle;
 
 public partial class SaveCourseCycle
 {
-    private List<CourseDto> CourseDtos { get; set; }
-    private List<UserDto>  Teachers { get; set; }
+    private List<CourseDto> CourseDtos { get; set; } = new List<CourseDto>();
+    private List<UserDto> Teachers { get; set; } = new List<UserDto>();
     public SaveCourseCycle() : base("CourseCycle")
     {
     }
@@ -15,7 +15,7 @@ public partial class SaveCourseCycle
     protected override async Task OnInitializedAsync()
     {
         CourseDtos= await _client.GetFromJsonAsync<List<CourseDto>>($"Course");
-        Teachers= await _client.GetFromJsonAsync<List<UserDto>>($"Course");
+        Teachers= await _client.GetFromJsonAsync<List<UserDto>>($"Users/GetTeachers");
     }
 
     private async Task SubmitValidForm()

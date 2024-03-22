@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorSchoolApi.Routes
 {
-    public static class CourseCycleRoutes
+    public static class GenericCrudRoutes
     {
-        public static void AddGenericCrudRoutes<T>(this WebApplication app,string url)
+        public static void AddGenericCrudRoutes<T>(this WebApplication app,string controllerName)
         { 
-            var group = app.MapGroup("/CourseCycle").RequireAuthorization();
+            var group = app.MapGroup($"/{controllerName}");
             group.MapPost("/", async (
                     [FromServices] ICrudService<T,int> service,
                     [FromBody] T courseDto) => await service.Create(courseDto))

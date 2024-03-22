@@ -1,4 +1,5 @@
-﻿@page "/SaveCourseCycle"
+﻿@page "/CourseCycle/Save"
+@page "/CourseCycle/Save/{Id}"
 @attribute [Authorize]
 @using BlazorSchoolShared.Dto
 @inherits BaseSavePage<CourseCycleDto>
@@ -9,27 +10,41 @@
     <FluentValidationValidator />
      <MudCard xs="6" Square="true" Elevation="4">
          <MudCardContent>
-             <MudSelect T="int" Label="Year"
+             <MudSelect T="int?" Label="Year"
                         @bind-Value="dto.Year" 
                         For="@(() => dto.Year)"
                         Variant="Variant.Outlined"
                         AnchorOrigin="Origin.BottomCenter">
                  @for (int i = DateTime.Now.Year ; i < DateTime.Now.Year+5; i++)
                  {
-                     <MudSelectItem T="int" Value="@i"/>
+                     <MudSelectItem T="int?" Value="@i"/>
                  }
 
              </MudSelect>
              
-             <MudSelect T="int" Label="Year"
+             <MudSelect T="int?" Label="Course"
+                         For="@(() => dto.CourseId)"
+                        Variant="Variant.Outlined"
                         @bind-Value="dto.CourseId">
-                   @foreach(var course in CourseDtos)
-                                  {
-                                      <MudSelectItem T="int" Value="@course.Id">
-                                          @course.Description
-                                      </MudSelectItem>
-                                  }
+                 @foreach(var course in CourseDtos)
+                 {
+                     <MudSelectItem T="int?" Value="@course.Id">
+                         @course.Description
+                     </MudSelectItem>
+                 }
              </MudSelect>
+             
+             <MudSelect T="string?" Label="Teacher"
+                        For="@(() => dto.TeacherId)"
+                        Variant="Variant.Outlined"
+                                     @bind-Value="dto.TeacherId">
+                                @foreach(var course in Teachers)
+                                               {
+                                                   <MudSelectItem T="string?" Value="@course.Id">
+                                                       @course.Name
+                                                   </MudSelectItem>
+                                               }
+                          </MudSelect>
          </MudCardContent>
         <MudCardActions>
                 <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto" OnClick="@(() => Manager.NavigateTo("/Course/List") )" >Back</MudButton>

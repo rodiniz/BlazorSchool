@@ -16,7 +16,7 @@ public partial class ListCourseCycle
         
     protected override async Task OnInitializedAsync()
     {
-        CourseCycles= await HttpClient.GetFromJsonAsync<List<CourseCycleDto>>("Course");
+        CourseCycles= await HttpClient.GetFromJsonAsync<List<CourseCycleDto>>("CourseCycle");
     }
     public void NavidateToSave(int? id)
     {
@@ -31,8 +31,8 @@ public partial class ListCourseCycle
             yesText:"Yes", noText:"No");
         if (result.HasValue)
         {
-            await HttpClient.DeleteAsync($"Course/{id}");
-            Courses= await HttpClient.GetFromJsonAsync<List<CourseDto>>("Course");
+            await HttpClient.DeleteAsync($"CourseCycle/{id}");
+            CourseCycles= await HttpClient.GetFromJsonAsync<List<CourseCycleDto>>("Course");
         }    
     }
 }
