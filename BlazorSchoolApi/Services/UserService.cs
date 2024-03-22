@@ -1,6 +1,8 @@
 ﻿using BlazorSchoolApi.Data;
 using BlazorSchoolApi.Interfaces;
+using BlazorSchoolShared.Dto;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorSchoolApi.Services;
 
@@ -8,8 +10,8 @@ public class UserService : IUserService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly IEmailSenderService _emailSenderService;
     private readonly ILogger<UserService> _logger;
+    private readonly SchoolContext _context;
     
     private static readonly Random Random = new();
     private const string LowerCase = "abcdefghijklmnopqursuvwxyz";
@@ -20,12 +22,13 @@ public class UserService : IUserService
     public UserService(
         UserManager<ApplicationUser> userManager, 
         RoleManager<IdentityRole> roleManager,
-        IEmailSenderService emailSenderService, ILogger<UserService> logger)
+        ILogger<UserService> logger, SchoolContext context)
     {
         _userManager = userManager;
         _roleManager = roleManager;
-        _emailSenderService = emailSenderService;
+       
         _logger = logger;
+        _context = context;
     }
 
     public async Task<string?> CreateUser(ApplicationUser user, string roleName)
@@ -68,6 +71,26 @@ public class UserService : IUserService
 
         var userCreated = await _userManager.FindByIdAsync(userId);
         return userCreated;
+    }
+
+    public async Task<IResult> GetByRole(string role)
+    {
+            var users = await (from u in  _context.Users
+                    join ur in _context.UserRoles on  u.Id equals ur.UserId
+                    join ro in _context.Roles on ur.RoleId equals ro.Id
+                    where ro.Name ==role
+                    select new { u.Id, u.Email, u.Name,RoleName= ro.Name ,u.Address,u.BirthDate})
+                .ToListAsync();
+            return TypedResults.Ok(
+                users.Select(c => 
+                    new UserDto { 
+                        Id = c.Id, 
+                        Email = c.Email, 
+                        Name = c.Name,
+                        Address = c.Address,
+                        BirthDate = c.BirthDate,
+                        RoleName = c.RoleName
+                    }));
     }
 
     private static string GenerateStrongPassword(int passwordSize)

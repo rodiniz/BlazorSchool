@@ -66,8 +66,9 @@ using (var scope = app.Services.CreateScope())
 }
 app.UseHttpsRedirection();
 
-app.AddStudentRoutes();
-app.AddCourseRoutes();
+app.AddUserRoutes();
+app.AddGenericCrudRoutes<CourseDto>("Course");
+app.AddGenericCrudRoutes<CourseCycleDto>("CourseCyle");
 
 app.UseCors(x => x
     .AllowAnyMethod()

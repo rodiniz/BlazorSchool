@@ -1,0 +1,42 @@
+﻿@page "/SaveCourseCycle"
+@attribute [Authorize]
+@using BlazorSchoolShared.Dto
+@inherits BaseSavePage<CourseCycleDto>
+@inject ISnackbar Snackbar
+@inject NavigationManager Manager
+<MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="pt-12 pa-4 align-center justify-center ">
+<EditForm Model="dto" OnValidSubmit="SubmitValidForm">
+    <FluentValidationValidator />
+     <MudCard xs="6" Square="true" Elevation="4">
+         <MudCardContent>
+             <MudSelect T="int" Label="Year"
+                        @bind-Value="dto.Year" 
+                        For="@(() => dto.Year)"
+                        Variant="Variant.Outlined"
+                        AnchorOrigin="Origin.BottomCenter">
+                 @for (int i = DateTime.Now.Year ; i < DateTime.Now.Year+5; i++)
+                 {
+                     <MudSelectItem T="int" Value="@i"/>
+                 }
+
+             </MudSelect>
+             
+             <MudSelect T="int" Label="Year"
+                        @bind-Value="dto.CourseId">
+                   @foreach(var course in CourseDtos)
+                                  {
+                                      <MudSelectItem T="int" Value="@course.Id">
+                                          @course.Description
+                                      </MudSelectItem>
+                                  }
+             </MudSelect>
+         </MudCardContent>
+        <MudCardActions>
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto" OnClick="@(() => Manager.NavigateTo("/Course/List") )" >Back</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+        </MudCardActions>
+    
+   
+    </MudCard>
+</EditForm>
+</MudContainer>

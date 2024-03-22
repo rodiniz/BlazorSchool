@@ -9,7 +9,7 @@ public class BaseSavePage<T>:ComponentBase where T:new()
         public int? Id { get; set; }
 
         [Inject] 
-        private  HttpClient _client { get; set; }
+        protected  HttpClient _client { get; set; }
         
         [Inject] 
         protected  NavigationManager _Manager { get; set; }
