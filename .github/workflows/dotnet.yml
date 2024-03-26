@@ -21,20 +21,4 @@ jobs:
 
       - name: Build
         run: dotnet build 'BlazorSchoolApi' --configuration Release
-
-      - name: Publish
-        run: dotnet publish 'BlazorSchoolApi' -c Release -o publish_output
-
-      - name: Deploy to FTP
-        uses: SamKirkland/FTP-Deploy-Action@4.2.0
-        with:
-          server: site1522.siteasp.net
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASS }}
-          local-dir: publish_output/
-          server-dir: wwwroot/
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/runtimes/**
+  

@@ -3,7 +3,7 @@
 public class CourseCycleDto
 {
     public int Id { get; set; }
-    public  string CourseName { get; set; }
+    public  string? CourseName { get; set; }
     public  int? CourseId { get; set; }
     
     public string? TeacherId { get; set; }

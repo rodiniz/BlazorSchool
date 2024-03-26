@@ -32,7 +32,7 @@ namespace BlazorSchool.Services
             {
                 var error = await result.Content.ReadFromJsonAsync<RegisterResultModel>();
                 var rawError = await result.Content.ReadAsStringAsync();
-                error.errors.additionalProp1 = new[] { rawError };
+                error!.errors!.additionalProp1 = new[] { rawError };
                 return error;
             }
 
@@ -49,7 +49,7 @@ namespace BlazorSchool.Services
             }
 
             var loginResult = await response.Content.ReadFromJsonAsync<LoginResult>();
-            await _localStorage.SetItemAsync("authToken", loginResult.AccessToken);
+            await _localStorage.SetItemAsync("authToken", loginResult!.AccessToken);
             await _localStorage.SetItemAsync("email", loginModel.Email);
             ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginModel.Email);
             _httpClient.DefaultRequestHeaders.Authorization =

@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorSchool;
+namespace BlazorSchool.Pages;
 
 public class BaseSavePage<T>:ComponentBase where T:new()
 {
@@ -9,23 +9,23 @@ public class BaseSavePage<T>:ComponentBase where T:new()
         public int? Id { get; set; }
 
         [Inject] 
-        protected  HttpClient _client { get; set; }
+        protected  HttpClient? Client { get; set; }
         
         [Inject] 
-        protected  NavigationManager _Manager { get; set; }
+        protected  NavigationManager? Manager { get; set; }
 
-        private string _url{ get; set; }
+        protected string Url{ get; set; }
         public BaseSavePage(string url)
         {
-            _url=url;
+            Url=url;
         }
 
-        protected T dto{ get; set; }= new ();
+        protected T Dto{ get; set; }= new ();
         protected override async Task OnInitializedAsync()
         {
             if (Id.HasValue)
             {
-                dto = (await _client.GetFromJsonAsync<T>($"{_url}/{Id.Value}"))!;
+                Dto = (await Client!.GetFromJsonAsync<T>($"{Url}/{Id.Value}"))!;
             }
         }
         protected async Task<bool> Save()
@@ -33,11 +33,11 @@ public class BaseSavePage<T>:ComponentBase where T:new()
             HttpResponseMessage message;
             if (Id.HasValue)
             {
-               message= await _client.PutAsJsonAsync($"{_url}/{Id.Value}", dto);
+               message= await Client!.PutAsJsonAsync($"{Url}/{Id.Value}", Dto);
             }
             else
             {
-               message=await _client.PostAsJsonAsync($"/{_url}", dto);
+               message=await Client!.PostAsJsonAsync($"/{Url}", Dto);
             }   
             return message.IsSuccessStatusCode;        
         }

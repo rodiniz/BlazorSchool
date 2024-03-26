@@ -28,15 +28,15 @@ namespace BlazorSchool.Provider
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", savedToken);
             var authenticatedUser =
-                new ClaimsPrincipal(new ClaimsIdentity(claims: new[] { new Claim(ClaimTypes.Name, await _localStorage.GetItemAsync<string>("email")) },
+                new ClaimsPrincipal(new ClaimsIdentity(claims: new[] { new Claim(ClaimTypes.Name, (await _localStorage.GetItemAsync<string>("email"))!) },
                     "apiauth"));
             return new AuthenticationState(authenticatedUser);
         }
 
-        public void MarkUserAsAuthenticated(string email)
+        public void MarkUserAsAuthenticated(string? email)
         {
             var authenticatedUser =
-                new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, email) }, "apiauth"));
+                new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, email!) }, "apiauth"));
             var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
             NotifyAuthenticationStateChanged(authState);
         }

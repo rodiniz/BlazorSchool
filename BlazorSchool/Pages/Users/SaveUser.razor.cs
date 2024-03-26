@@ -11,15 +11,12 @@ namespace BlazorSchool.Pages.Users
     public partial class SaveUser
     {
         [Parameter]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [Inject] 
-        private  HttpClient _client { get; set; }
-        
-        [Inject] 
-        protected  NavigationManager _Manager { get; set; }
+        private  HttpClient? Client { get; set; }
 
-        private UserDto _dto=new();
+        private UserDto? _userDto=new();
         public bool IsReadOnly()
         {
             return !string.IsNullOrEmpty(Id);
@@ -28,7 +25,7 @@ namespace BlazorSchool.Pages.Users
         {
             if (!string.IsNullOrEmpty(Id))
             {
-                _dto = (await _client.GetFromJsonAsync<UserDto>($"Users/{Id}"));
+                _userDto = (await Client!.GetFromJsonAsync<UserDto>($"Users/{Id}"));
             }
         }
         protected async Task SubmitValidForm()
@@ -36,15 +33,15 @@ namespace BlazorSchool.Pages.Users
             HttpResponseMessage message;
             if (!string.IsNullOrEmpty(Id))
             {
-                message= await _client.PutAsJsonAsync($"Users/{Id}", _dto);
+                message= await Client!.PutAsJsonAsync($"Users/{Id}", _userDto);
             }
             else
             {
-                message=await _client.PostAsJsonAsync($"/Users", _dto);
+                message=await Client!.PostAsJsonAsync($"/Users", _userDto);
             }
 
             if(message.IsSuccessStatusCode){
-                _Manager.NavigateTo("/Users/List");
+                Manager!.NavigateTo("/Users/List");
             }
             else{
                 Snackbar.Add("Error saving  User", Severity.Error);

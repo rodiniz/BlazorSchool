@@ -1,26 +1,25 @@
 ﻿@page "/Users/Save/{Id}"
 @page "/Users/Save"
 @attribute [Authorize]
-@using BlazorSchoolShared.Dto
 @inject ISnackbar Snackbar
 @inject NavigationManager Manager
 <MudContainer MaxWidth="MaxWidth.Small" Class="pt-12 pa-4 align-center justify-center ">
-<EditForm Model="_dto" OnValidSubmit="SubmitValidForm">
+<EditForm Model="_userDto" OnValidSubmit="SubmitValidForm">
     <FluentValidationValidator />
     <MudCard xs="6" Square="true" Elevation="4">
         <MudCardContent>
             <MudTextField Label="E-Mail"
-                          @bind-Value="_dto.Email" For="@(() => _dto.Email)" ReadOnly="@IsReadOnly()"/>
+                          @bind-Value="_userDto!.Email" For="@(() => _userDto!.Email)" ReadOnly="@IsReadOnly()"/>
             <MudTextField Label="Name"
-                          @bind-Value="_dto.Name" For="@(() => _dto.Name)"/>
+                          @bind-Value="_userDto!.Name" For="@(() => _userDto!.Name)"/>
 
             <MudTextField Label="Address"
-                          @bind-Value="_dto.Address" For="@(() => _dto.Address)"/>
+                          @bind-Value="_userDto!.Address" For="@(() => _userDto!.Address)"/>
 
 
-            <MudDatePicker Label="BirthDate" @bind-Date="_dto.BirthDate" For="@(() => _dto.BirthDate)"/>
+            <MudDatePicker Label="BirthDate" @bind-Date="_userDto!.BirthDate" For="@(() => _userDto!.BirthDate)"/>
             
-            <MudSelect T="string" Label="Role" @bind-Value="_dto.RoleName">
+            <MudSelect T="string" Label="Role" @bind-Value="_userDto!.RoleName">
                 <MudSelectItem Value="@("Teacher")" />
                 <MudSelectItem Value="@("Student")" />
             </MudSelect>

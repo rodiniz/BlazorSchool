@@ -9,11 +9,11 @@ namespace BlazorSchool.Pages.Courses
     {
         [Inject] private HttpClient? HttpClient { get; set; }
         [Inject] private IDialogService? DialogService { get; set; }
-        public List<CourseDto>? Courses { get; set; }
+        private List<CourseDto>? Courses { get; set; }
         
         protected override async Task OnInitializedAsync()
         {
-            Courses= await HttpClient.GetFromJsonAsync<List<CourseDto>>("Course");
+            Courses= await HttpClient!.GetFromJsonAsync<List<CourseDto>>("Course");
         }
         public void NavidateToSave(int? id)
         {
@@ -22,13 +22,13 @@ namespace BlazorSchool.Pages.Courses
 
         public async Task Delete(int id)
         {
-            bool? result = await DialogService.ShowMessageBox(
+            bool? result = await DialogService!.ShowMessageBox(
                 "Warning", 
                 "Are you sure you want to delete?",
                 yesText:"Yes", noText:"No");
             if (result.HasValue)
             {
-                await HttpClient.DeleteAsync($"Course/{id}");
+                await HttpClient!.DeleteAsync($"Course/{id}");
                 Courses= await HttpClient.GetFromJsonAsync<List<CourseDto>>("Course");
             }    
         }

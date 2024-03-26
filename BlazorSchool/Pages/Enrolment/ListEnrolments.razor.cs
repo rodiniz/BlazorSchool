@@ -3,11 +3,12 @@ using BlazorSchoolShared.Dto;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace BlazorSchool.Pages.CourseCycle;
+namespace BlazorSchool.Pages.Enrolment;
 
-public partial class ListCourseCycle
+public partial class ListEnrolments
 {
-    public List<CourseCycleDto>? CourseCycles { get; set; }
+
+    public List<EnrolmentDto>? EnrolmentDtos { get; set; } = new List<EnrolmentDto>();
     [Inject] private HttpClient? HttpClient { get; set; }
     [Inject] private IDialogService? DialogService { get; set; }
     
@@ -16,11 +17,11 @@ public partial class ListCourseCycle
         
     protected override async Task OnInitializedAsync()
     {
-        CourseCycles= await HttpClient!.GetFromJsonAsync<List<CourseCycleDto>>("CourseCycle");
+        EnrolmentDtos= await HttpClient!.GetFromJsonAsync<List<EnrolmentDto>>("Enrolment");
     }
     public void NavidateToSave(int? id)
     {
-        Manager!.NavigateTo($"/CourseCycle/Save/{id}");
+        Manager!.NavigateTo($"/Enrolment/Save/{id}");
     }
 
     public async Task Delete(int id)
@@ -31,8 +32,8 @@ public partial class ListCourseCycle
             yesText:"Yes", noText:"No");
         if (result.HasValue)
         {
-            await HttpClient!.DeleteAsync($"CourseCycle/{id}");
-            CourseCycles= await HttpClient.GetFromJsonAsync<List<CourseCycleDto>>("Course");
+            await HttpClient?.DeleteAsync($"Enrolment/{id}")!;
+            EnrolmentDtos= (await HttpClient.GetFromJsonAsync<List<EnrolmentDto>>("Enrolment"))!;
         }    
     }
 }

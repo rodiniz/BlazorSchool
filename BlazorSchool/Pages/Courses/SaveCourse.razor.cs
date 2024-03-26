@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
+﻿using MudBlazor;
 
 namespace BlazorSchool.Pages.Courses
 {
@@ -14,9 +13,9 @@ namespace BlazorSchool.Pages.Courses
 
        private async Task SubmitValidForm()
         {
-             var sucess=await  Save();
-             if(sucess){
-                _Manager.NavigateTo("/Course/List");
+             var success=await  Save();
+             if(success){
+                Manager!.NavigateTo($"/{Url}/List");
              }
             else{
                 Snackbar.Add("Error saving  Course", Severity.Error);
