@@ -9,6 +9,11 @@ namespace BlazorSchoolApi.Data
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<CourseCycle> CourseCycles { get; set; }
         public DbSet<StudentTests> StudentTests { get; set; }
+
+        public SchoolContext()
+        {
+            
+        }
         public SchoolContext(DbContextOptions<SchoolContext> options) : base(options)
         {
         }

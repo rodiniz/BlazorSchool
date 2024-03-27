@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSchoolApi", "BlazorSc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSchoolShared", "BlazorSchoolShared\BlazorSchoolShared.csproj", "{26774DB7-8AC7-4ED7-A6CF-A282AC3B1EDD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorSchoolApiTest", "BlazorSchoolApiTest\BlazorSchoolApiTest.csproj", "{E8486AB9-CB74-4E7F-A510-7042D6ADAD67}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{26774DB7-8AC7-4ED7-A6CF-A282AC3B1EDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26774DB7-8AC7-4ED7-A6CF-A282AC3B1EDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26774DB7-8AC7-4ED7-A6CF-A282AC3B1EDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8486AB9-CB74-4E7F-A510-7042D6ADAD67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8486AB9-CB74-4E7F-A510-7042D6ADAD67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8486AB9-CB74-4E7F-A510-7042D6ADAD67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8486AB9-CB74-4E7F-A510-7042D6ADAD67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
