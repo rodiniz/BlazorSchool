@@ -62,14 +62,23 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
         {
             return TypedResults.BadRequest(result.Errors);
         }
-        await _context.CourseCycles
-            .Where(b => b.Id == id)
-            .ExecuteUpdateAsync(setters => setters
-                .SetProperty(b => b.TeacherId, model.TeacherId)
-                .SetProperty(b => b.Year, model.Year)
-                .SetProperty(b => b.Course.Id, model.CourseId)
-            );
-        return TypedResults.Ok();
+
+        try
+        {
+            var affected = await _context.CourseCycles
+                 .Where(b => b.Id == id)
+                 .ExecuteUpdateAsync(setters => setters
+                     .SetProperty(b => b.TeacherId, model.TeacherId)
+                     .SetProperty(b => b.Year, model.Year)
+                     .SetProperty(b => b.CourseId, model.CourseId)
+                 );
+            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+        }
+        catch (Exception e)
+        {
+            return TypedResults.BadRequest(e.ToString());
+        }
+
     }
 
     public async Task<IResult> Delete(int idEntity)

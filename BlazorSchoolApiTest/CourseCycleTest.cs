@@ -21,7 +21,6 @@ namespace BlazorSchoolApiTest
             _fixture = new Fixture();
             _client = new HttpClient();
             _factory = new CustomWebApplicationFactory<Program>();
-            // Assuming you have a CustomWebApplicationFactory class to create the client
             _client = _factory.CreateAuthenticatedClient();
         }
         [Test]
@@ -52,12 +51,55 @@ namespace BlazorSchoolApiTest
             var created = await _client.PostAsJsonAsync("/CourseCycle", courseCycle);
             Assert.That(created.StatusCode == HttpStatusCode.Created);
 
-            var response = await _client.GetFromJsonAsync<IEnumerable<CourseCycleDto>>("/CourseCycle");
-
-            // Assert
+            var response = await _client.GetFromJsonAsync<List<CourseCycleDto>>("/CourseCycle");
 
             Assert.That(response is not null);
-            Assert.That(response.Count() == 1);
+
+            //update
+            var cc = response.Single(c => c.TeacherId == teacher.Id);
+            cc.Year = DateTime.Now.Year;
+
+            var updateRespone = await _client.PutAsJsonAsync<CourseCycleDto>($"/CourseCycle/{cc.Id}", cc);
+            Assert.That(updateRespone.StatusCode == HttpStatusCode.OK);
+
+
+            var deleteResponse = await _client.DeleteAsync($"/CourseCycle/{response[0].Id}");
+            Assert.That(deleteResponse.StatusCode == HttpStatusCode.OK);
+
+
+            _factory.SeedData(dbc =>
+            {
+                dbc.Users.Remove(teacher);
+                dbc.Courses.Remove(course);
+            });
+
         }
+
+        [Test]
+        public async Task ShouldReturnNotFoundWhenCourseCycleDosNotExistForGet()
+        {
+            //Act
+            var response = await _client.GetAsync("/CourseCycle/-1");
+
+            //Assert
+            Assert.That(response.StatusCode == HttpStatusCode.NotFound);
+        }
+
+        [Test]
+        public async Task ShouldReturnNotFoundWhenCourseCycleDosNotExistForDelete()
+        {
+            //Act
+            var response = await _client.DeleteAsync("/CourseCycle/-1");
+
+            //Assert
+            Assert.That(response.StatusCode == HttpStatusCode.NotFound);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _factory.Dispose();
+        }
+
     }
 }

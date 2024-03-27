@@ -1,9 +1,8 @@
-﻿using System.Net.Http.Headers;
-using BlazorSchoolApi.Data;
+﻿using BlazorSchoolApi.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Headers;
 
 namespace BlazorSchoolApiTest
 {
@@ -14,17 +13,6 @@ namespace BlazorSchoolApiTest
         {
             builder.ConfigureServices(services =>
             {
-                var descriptor = services.SingleOrDefault(
-                    d => d.ServiceType ==
-                         typeof(DbContextOptions<SchoolContext>));
-
-                services.Remove(descriptor);
-
-                services.AddDbContext<SchoolContext>(options =>
-                {
-                    options.UseInMemoryDatabase("InMemoryDbForTesting");
-                });
-
                 var sp = services.BuildServiceProvider();
 
                 using (var scope = sp.CreateScope())
@@ -35,7 +23,7 @@ namespace BlazorSchoolApiTest
                         .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
                     db.Database.EnsureCreated();
-                    
+
                 }
             });
         }
