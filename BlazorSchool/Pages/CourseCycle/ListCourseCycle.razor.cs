@@ -27,7 +27,7 @@ public partial class ListCourseCycle
         if (result.HasValue)
         {
             await HttpClient!.DeleteAsync($"CourseCycle/{id}");
-            CourseCycles = await HttpClient.GetFromJsonAsync<List<CourseCycleDto>>("Course");
+            CourseCycles = await HttpClient.GetFromJsonAsync<List<CourseCycleDto>>("CourseCycle");
         }
     }
 }

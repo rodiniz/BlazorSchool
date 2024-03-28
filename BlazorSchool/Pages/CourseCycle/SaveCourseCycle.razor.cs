@@ -1,6 +1,6 @@
-﻿using System.Net.Http.Json;
-using BlazorSchoolShared.Dto;
+﻿using BlazorSchoolShared.Dto;
 using MudBlazor;
+using System.Net.Http.Json;
 
 namespace BlazorSchool.Pages.CourseCycle;
 
@@ -14,19 +14,22 @@ public partial class SaveCourseCycle
 
     protected override async Task OnInitializedAsync()
     {
-        CourseDtos= await Client!.GetFromJsonAsync<List<CourseDto>>($"Course");
-        Teachers= await Client!.GetFromJsonAsync<List<UserDto>>($"Users/GetTeachers");
+        CourseDtos = await Client!.GetFromJsonAsync<List<CourseDto>>($"Course");
+        Teachers = await Client!.GetFromJsonAsync<List<UserDto>>($"Users/GetTeachers");
+        await base.OnInitializedAsync();
     }
 
     private async Task SubmitValidForm()
     {
-        var success=await  Save();
-        if(success){
+        var success = await Save();
+        if (success)
+        {
             Manager!.NavigateTo($"/{Url}/List");
         }
-        else{
+        else
+        {
             Snackbar.Add("Error saving  Course", Severity.Error);
         }
-            
+
     }
 }

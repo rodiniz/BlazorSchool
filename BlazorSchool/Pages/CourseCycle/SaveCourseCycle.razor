@@ -1,5 +1,5 @@
 ﻿@page "/CourseCycle/Save"
-@page "/CourseCycle/Save/{Id}"
+@page "/CourseCycle/Save/{Id:int}"
 @attribute [Authorize]
 @using BlazorSchoolShared.Dto
 @inherits BaseSavePage<CourseCycleDto>
@@ -22,6 +22,7 @@
              </MudSelect>
              
              <MudSelect T="int?" Label="Course"
+                        
                          For="@(() => Dto.CourseId)"
                         Variant="Variant.Outlined"
                         @bind-Value="Dto.CourseId">

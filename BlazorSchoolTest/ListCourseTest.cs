@@ -30,7 +30,7 @@ namespace BlazorSchoolTest
 
             // Assert that content of the paragraph shows counter at zero
             var content = cut.FindAll("td[data-label=Description]");
-
+            Assert.Equal(content.Count, courses.Count);
             for (var i = 0; i < content.Count; i++)
             {
                 Assert.Equal(content[i].InnerHtml, courses[i].Description);
