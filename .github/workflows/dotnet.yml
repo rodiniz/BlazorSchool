@@ -21,4 +21,19 @@ jobs:
 
       - name: Build
         run: dotnet build 'BlazorSchoolApi' --configuration Release
+
+      - name: Test
+        run:  dotnet test --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+      - name: Generate Coverage Report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.2.4
+        with:
+         reports: '**/coverage.opencover.xml'
+         targetdir: coverage-report
+         reporttypes: 'HtmlInline_AzurePipelines'
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+         name: coverage-report
+         path: coverage-report
   

@@ -99,6 +99,7 @@ namespace BlazorSchoolApiTest
         public void TearDown()
         {
             _factory.Dispose();
+            _client.Dispose();
         }
 
     }
