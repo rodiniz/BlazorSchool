@@ -10,7 +10,7 @@ namespace BlazorSchoolTest
     /// These tests are written entirely in C#.
     /// Learn more at https://bunit.dev/docs/getting-started/writing-tests.html#creating-basic-tests-in-cs-files
     /// </summary>
-    public class ListCourseTest : TestContext
+    public class ListCourseCycleTest : TestContext
     {
         private Fixture? _fixture = new Fixture();
 
@@ -22,18 +22,22 @@ namespace BlazorSchoolTest
             authContext.SetAuthorizing();
 
             Services.AddMudServices();
-            var courses = _fixture.CreateMany<CourseDto>().ToList();
+            var courses = _fixture.CreateMany<CourseCycleDto>().ToList();
             var mock = Services.AddMockHttpClient();
-            mock.When("/Course").RespondJson(courses);
+            mock.When("/CourseCycle").RespondJson(courses);
 
             var cut = RenderComponent<BlazorSchool.Pages.Courses.List>();
 
             // Assert that content of the paragraph shows counter at zero
-            var content = cut.FindAll("td[data-label=Description]");
+            var courseName = cut.FindAll("td[data-label=CourseName]");
+            var year = cut.FindAll("td[data-label=Year]");
+            var teacherName = cut.FindAll("td[data-label=TeacherName]");
 
-            for (var i = 0; i < content.Count; i++)
+            for (var i = 0; i < courseName.Count; i++)
             {
-                Assert.Equal(content[i].InnerHtml, courses[i].Description);
+                Assert.Equal(courseName[i].InnerHtml, courses[i].CourseName);
+                Assert.Equal(year[i].InnerHtml, courses[i].Year.Value.ToString());
+                Assert.Equal(teacherName[i].InnerHtml, courses[i].TeacherName);
             }
 
         }

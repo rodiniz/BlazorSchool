@@ -1,16 +1,11 @@
-using AutoFixture;
+﻿using AutoFixture;
 using BlazorSchoolShared.Dto;
 using MudBlazor.Services;
 using RichardSzalay.MockHttp;
-using System.Linq;
 
 namespace BlazorSchoolTest
 {
-    /// <summary>
-    /// These tests are written entirely in C#.
-    /// Learn more at https://bunit.dev/docs/getting-started/writing-tests.html#creating-basic-tests-in-cs-files
-    /// </summary>
-    public class ListCourseTest : TestContext
+    public class SaveCourseCycle : TestContext
     {
         private Fixture? _fixture = new Fixture();
 
@@ -37,7 +32,5 @@ namespace BlazorSchoolTest
             }
 
         }
-
-
     }
 }
