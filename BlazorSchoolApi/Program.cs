@@ -27,9 +27,10 @@ builder.Services.AddSwaggerGen(c =>
         Description = "JWT Authorization header using the Bearer scheme."
 
     }));
-
+var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+//Console.WriteLine(conn);
 builder.Services.AddDbContext<SchoolContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(conn));
 
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>(c =>
 {
@@ -48,12 +49,12 @@ builder.Services.AddIdentityApiEndpoints<ApplicationUser>(c =>
 
 builder.Services.AddCors();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
-builder.Services.AddScoped<ICrudService<CourseDto,int>, CourseService>();
+builder.Services.AddScoped<ICrudService<CourseDto, int>, CourseService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ICrudService<UserDto,string>, UserCrudService>();
+builder.Services.AddScoped<ICrudService<UserDto, string>, UserCrudService>();
 builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CourseValidator>();
-builder.Services.AddScoped<ICrudService<CourseCycleDto,int>, CourseCycleService>();
+builder.Services.AddScoped<ICrudService<CourseCycleDto, int>, CourseCycleService>();
 var app = builder.Build();
 app.MapGroup("/identity").MapIdentityApi<ApplicationUser>();
 app.MapGet("/identity/logout", async (SignInManager<ApplicationUser> manager) => await manager.SignOutAsync());

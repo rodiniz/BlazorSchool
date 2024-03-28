@@ -30,6 +30,7 @@ namespace BlazorSchoolTest
             mock.When($"/CourseCycle/{id}").RespondJson(courseCycle);
             mock.When($"/Course").RespondJson(courses);
             mock.When($"/Users/GetTeachers").RespondJson(teachers);
+
             JSInterop.SetupVoid("mudPopover.initialize", "mudblazor-main-content", 0);
             JSInterop.SetupVoid("mudPopover.connect", _ => true);
             JSInterop.SetupVoid("mudKeyInterceptor.connect", _ => true);
