@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using System.Net.Http.Headers;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorSchoolApiTest
 {
@@ -13,6 +14,21 @@ namespace BlazorSchoolApiTest
         {
             builder.ConfigureServices(services =>
             {
+                // Remove the app's ApplicationDbContext registration.
+                var descriptor = services.SingleOrDefault(
+                    d => d.ServiceType ==
+                         typeof(DbContextOptions<SchoolContext>));
+
+                if (descriptor != null)
+                {
+                    services.Remove(descriptor);
+                }
+
+              
+                services.AddDbContext<SchoolContext>(options =>
+                {
+                    options.UseSqlite("Data Source=School.db");
+                });
                 var sp = services.BuildServiceProvider();
 
                 using (var scope = sp.CreateScope())
@@ -21,9 +37,9 @@ namespace BlazorSchoolApiTest
                     var db = scopedServices.GetRequiredService<SchoolContext>();
                     var logger = scopedServices
                         .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
-
+                    
                     db.Database.EnsureCreated();
-
+                    //db.Database.Migrate();
                 }
             });
         }
