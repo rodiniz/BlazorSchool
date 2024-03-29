@@ -10,7 +10,7 @@ namespace BlazorSchoolTest
     /// These tests are written entirely in C#.
     /// Learn more at https://bunit.dev/docs/getting-started/writing-tests.html#creating-basic-tests-in-cs-files
     /// </summary>
-    public class ListCourseCycleTest : TestContext
+    public class ListCourseCycleTest : BaseMudBlazorTest
     {
         private Fixture? _fixture = new Fixture();
 
@@ -18,10 +18,7 @@ namespace BlazorSchoolTest
         public void ShouldLoadGridWithCourses()
         {
             // Arrange
-            var authContext = this.AddTestAuthorization();
-            authContext.SetAuthorizing();
-
-            Services.AddMudServices();
+           
             var courses = _fixture.CreateMany<CourseCycleDto>().ToList();
             var mock = Services.AddMockHttpClient();
             mock.When("/CourseCycle").RespondJson(courses);

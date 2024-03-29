@@ -1,12 +1,11 @@
 ﻿using AutoFixture;
 using BlazorSchoolShared.Dto;
-using MudBlazor.Services;
 using RichardSzalay.MockHttp;
 using System.Linq;
 
 namespace BlazorSchoolTest
 {
-    public class SaveCourseCycleTest : TestContext
+    public class SaveCourseCycleTest : BaseMudBlazorTest
     {
         private readonly Fixture _fixture = new();
 
@@ -14,10 +13,6 @@ namespace BlazorSchoolTest
         public void ShouldLoadInputsWithValues()
         {
             // Arrange
-            var authContext = this.AddTestAuthorization();
-            authContext.SetAuthorizing();
-
-            Services.AddMudServices();
             var courseCycle = _fixture.Create<CourseCycleDto>();
             var courses = _fixture.CreateMany<CourseDto>().ToList();
             var teachers = _fixture.CreateMany<UserDto>().ToList();

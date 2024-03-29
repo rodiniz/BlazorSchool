@@ -23,5 +23,5 @@ jobs:
         run: dotnet build 'BlazorSchoolApi' --configuration Release
 
       - name: Test
-        run:  dotnet test --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover      
+        run:  dotnet test --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover 
     
