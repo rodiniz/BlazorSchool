@@ -21,14 +21,11 @@ public class EnrolmentService: ICrudService<EnrolmentDto,int>
     public async Task<IResult> Get(int id)
     {
         var courseCycle = await (from en in _context.Enrollments
-            join cc in _context.CourseCycles on en.CourseCycle.Id equals cc.Id
-            join student in _context.Users on  en.StudentId equals student.Id
+           join student in _context.Users on  en.StudentId equals student.Id
             select new EnrolmentDto
             {
-                Id = cc.Id,
-                CourseCycleId = cc.Id,
+                Id = en.Id,
                 StudentId = en.StudentId,
-                CourseCycleName = cc.Course.Description + cc.Year,
                 StudentName = student.Name
             }).SingleOrDefaultAsync(c => c.Id == id);
         return courseCycle == null ? 
@@ -42,16 +39,12 @@ public class EnrolmentService: ICrudService<EnrolmentDto,int>
         {
             return TypedResults.BadRequest(result.Errors);
         }
-
-        var cc = await _context.CourseCycles.SingleOrDefaultAsync(c => c.Id == model.CourseCycleId);
-        if (cc is null)
-        {
-            return TypedResults.BadRequest("Invalid course cycle");
-        }
+        
+        //TODO
         await _context.Enrollments.AddAsync(
             new Enrollment
             {
-               CourseCycle =cc,
+               
                StudentId = model.StudentId
             });
         await _context.SaveChangesAsync();
@@ -69,7 +62,6 @@ public class EnrolmentService: ICrudService<EnrolmentDto,int>
         await _context.Enrollments
             .Where(b => b.Id == id)
             .ExecuteUpdateAsync(setters => setters
-                .SetProperty(b => b.CourseCycle,cc)
                 .SetProperty(b => b.StudentId, model.StudentId)
             );
         return TypedResults.Ok();
@@ -84,14 +76,11 @@ public class EnrolmentService: ICrudService<EnrolmentDto,int>
     public async Task<IResult> GetAll()
     {
         var courseCycle = await (from en in _context.Enrollments
-            join cc in _context.CourseCycles on en.CourseCycle.Id equals cc.Id
             join student in _context.Users on  en.StudentId equals student.Id
             select new EnrolmentDto
             {
-                Id = cc.Id,
-                CourseCycleId = cc.Id,
+                Id = en.Id,
                 StudentId = en.StudentId,
-                CourseCycleName = cc.Course.Description + cc.Year,
                 StudentName = student.Name
             }).ToListAsync();
         return TypedResults.Ok(courseCycle);

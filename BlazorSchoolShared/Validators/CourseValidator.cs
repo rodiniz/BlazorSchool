@@ -7,7 +7,7 @@ namespace BlazorSchoolShared.Validators
     {
         public CourseValidator()
         {
-            RuleFor(course => course.Description).NotNull();
+            RuleFor(course => course.Description).NotNull().NotEmpty();
         }
     }
 }

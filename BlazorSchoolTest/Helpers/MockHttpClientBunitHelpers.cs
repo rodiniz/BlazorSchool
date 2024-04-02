@@ -12,7 +12,7 @@ public static class MockHttpClientBunitHelpers
         var mockHttpHandler = new MockHttpMessageHandler();
         var httpClient = mockHttpHandler.ToHttpClient();
         httpClient.BaseAddress = new Uri("http://localhost");
-        services.AddSingleton<HttpClient>(httpClient);
+        services.AddSingleton(httpClient);
         return mockHttpHandler;
     }
 

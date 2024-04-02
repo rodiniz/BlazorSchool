@@ -56,8 +56,8 @@ builder.Services.AddSingleton<IEmailSenderService, EmailSenderService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CourseValidator>();
 builder.Services.AddScoped<ICrudService<CourseCycleDto, int>, CourseCycleService>();
 var app = builder.Build();
-app.MapGroup("/identity").MapIdentityApi<ApplicationUser>();
-app.MapGet("/identity/logout", async (SignInManager<ApplicationUser> manager) => await manager.SignOutAsync());
+//app.MapGroup("/identity").MapIdentityApi<ApplicationUser>();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -71,6 +71,7 @@ app.UseHttpsRedirection();
 app.AddUserRoutes();
 app.AddGenericCrudRoutes<CourseDto>("Course");
 app.AddGenericCrudRoutes<CourseCycleDto>("CourseCycle");
+app.AddIdentityRoutes();
 
 app.UseCors(x => x
     .AllowAnyMethod()

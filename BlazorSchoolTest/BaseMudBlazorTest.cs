@@ -1,9 +1,11 @@
-﻿using MudBlazor.Services;
+﻿using AutoFixture;
+using MudBlazor.Services;
 
 namespace BlazorSchoolTest;
 
 public abstract class BaseMudBlazorTest: TestContext
 {
+    protected readonly Fixture Fixture = new ();
     protected BaseMudBlazorTest()
     {
         var authContext = this.AddTestAuthorization();

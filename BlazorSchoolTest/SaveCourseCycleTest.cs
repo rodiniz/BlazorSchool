@@ -7,16 +7,14 @@ namespace BlazorSchoolTest
 {
     public class SaveCourseCycleTest : BaseMudBlazorTest
     {
-        private readonly Fixture _fixture = new();
-
-        [Fact]
+   [Fact]
         public void ShouldLoadInputsWithValues()
         {
             // Arrange
-            var courseCycle = _fixture.Create<CourseCycleDto>();
-            var courses = _fixture.CreateMany<CourseDto>().ToList();
-            var teachers = _fixture.CreateMany<UserDto>().ToList();
-            var id = _fixture.Create<int>();
+            var courseCycle = Fixture.Create<CourseCycleDto>();
+            var courses = Fixture.CreateMany<CourseDto>().ToList();
+            var teachers = Fixture.CreateMany<UserDto>().ToList();
+            var id = Fixture.Create<int>();
 
             courses[0].Id = courseCycle.CourseId!.Value;
             teachers[0].Id = courseCycle.TeacherId!;
@@ -36,8 +34,7 @@ namespace BlazorSchoolTest
                 .Add(p => p.Id, id)
             );
 
-            // Assert that content of the paragraph shows counter at zero
-            var content = cut.FindAll("td[data-label=Description]");
+         var content = cut.FindAll("td[data-label=Description]");
 
             for (var i = 0; i < content.Count; i++)
             {

@@ -12,14 +12,12 @@ namespace BlazorSchoolTest
     /// </summary>
     public class ListCourseCycleTest : BaseMudBlazorTest
     {
-        private Fixture? _fixture = new Fixture();
-
         [Fact]
         public void ShouldLoadGridWithCourses()
         {
             // Arrange
            
-            var courses = _fixture.CreateMany<CourseCycleDto>().ToList();
+            var courses = Fixture.CreateMany<CourseCycleDto>().ToList();
             var mock = Services.AddMockHttpClient();
             mock.When("/CourseCycle").RespondJson(courses);
 

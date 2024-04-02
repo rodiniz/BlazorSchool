@@ -6,6 +6,6 @@ namespace BlazorSchoolApi.Data
     {
         public int Id { get; set; }
         public string StudentId { get; set; }
-        public virtual CourseCycle CourseCycle { get; set; }
+        public virtual List<CourseCycle> CourseCycle { get; set; }
     }
 }
