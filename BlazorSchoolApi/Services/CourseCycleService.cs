@@ -21,15 +21,12 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
     public async Task<IResult> Get(int id)
     {
         var courseCycle = await (from cc in _context.CourseCycles
-                                 join ro in _context.Users on cc.TeacherId equals ro.Id
+                                
                                  select new CourseCycleDto
                                  {
                                      Id = cc.Id,
-                                     CourseId = cc.Course.Id,
-                                     Year = cc.Year,
-                                     CourseName = cc.Course.Description,
-                                     TeacherId = cc.TeacherId,
-                                     TeacherName = ro.Name
+                                    Year = cc.Year,
+                                    
                                  }).SingleOrDefaultAsync(c => c.Id == id);
         return courseCycle == null ?
             TypedResults.NotFound() : TypedResults.Ok(courseCycle);
@@ -45,8 +42,7 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
 
         var courseCycle = new CourseCycle
         {
-            TeacherId = model.TeacherId,
-            Course = await _context.Courses.SingleOrDefaultAsync(c => c.Id == model.CourseId),
+            
             Year = model.Year.Value
         };
         await _context.CourseCycles.AddAsync(courseCycle);
@@ -68,9 +64,7 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
             var affected = await _context.CourseCycles
                  .Where(b => b.Id == id)
                  .ExecuteUpdateAsync(setters => setters
-                     .SetProperty(b => b.TeacherId, model.TeacherId)
-                     .SetProperty(b => b.Year, model.Year)
-                     .SetProperty(b => b.CourseId, model.CourseId)
+                    
                  );
             return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
         }
@@ -90,16 +84,11 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
     public Task<IResult> GetAll()
     {
         var dto = (from cc in _context.CourseCycles
-                   join course in _context.Courses on cc.Course.Id equals course.Id
-                   join ro in _context.Users on cc.TeacherId equals ro.Id
-                   select new CourseCycleDto
+                 select new CourseCycleDto
                    {
                        Id = cc.Id,
-                       CourseId = course.Id,
-                       Year = cc.Year,
-                       CourseName = course.Description,
-                       TeacherId = cc.TeacherId,
-                       TeacherName = ro.Name
+                      Year = cc.Year
+                       
                    }).ToList();
         return Task.FromResult<IResult>(TypedResults.Ok(dto));
     }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorSchoolApi.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    [Migration("20240321141243_v1")]
-    partial class v1
+    [Migration("20240403075511_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,7 +108,6 @@ namespace BlazorSchoolApi.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -124,21 +123,45 @@ namespace BlazorSchoolApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CourseId")
+                    b.Property<int?>("EnrollmentId")
                         .HasColumnType("int");
-
-                    b.Property<string>("TeacherId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseId");
+                    b.HasIndex("EnrollmentId");
 
                     b.ToTable("CourseCycles");
+                });
+
+            modelBuilder.Entity("BlazorSchoolApi.Data.CourseTeacher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CourseCycleId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TeacherId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseCycleId");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("CourseTeachers");
                 });
 
             modelBuilder.Entity("BlazorSchoolApi.Data.Enrollment", b =>
@@ -149,16 +172,10 @@ namespace BlazorSchoolApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CourseCycleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("StudentId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CourseCycleId");
 
                     b.ToTable("Enrollments");
                 });
@@ -171,7 +188,7 @@ namespace BlazorSchoolApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CourseCycleId")
+                    b.Property<int?>("CourseCycleId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -316,33 +333,35 @@ namespace BlazorSchoolApi.Migrations
 
             modelBuilder.Entity("BlazorSchoolApi.Data.CourseCycle", b =>
                 {
-                    b.HasOne("BlazorSchoolApi.Data.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
+                    b.HasOne("BlazorSchoolApi.Data.Enrollment", null)
+                        .WithMany("CourseCycle")
+                        .HasForeignKey("EnrollmentId");
                 });
 
-            modelBuilder.Entity("BlazorSchoolApi.Data.Enrollment", b =>
+            modelBuilder.Entity("BlazorSchoolApi.Data.CourseTeacher", b =>
                 {
-                    b.HasOne("BlazorSchoolApi.Data.CourseCycle", "CourseCycle")
-                        .WithMany()
-                        .HasForeignKey("CourseCycleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("BlazorSchoolApi.Data.CourseCycle", null)
+                        .WithMany("CourseTeachers")
+                        .HasForeignKey("CourseCycleId");
 
-                    b.Navigation("CourseCycle");
+                    b.HasOne("BlazorSchoolApi.Data.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId");
+
+                    b.HasOne("BlazorSchoolApi.Data.ApplicationUser", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId");
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("BlazorSchoolApi.Data.StudentTests", b =>
                 {
                     b.HasOne("BlazorSchoolApi.Data.CourseCycle", "CourseCycle")
                         .WithMany()
-                        .HasForeignKey("CourseCycleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourseCycleId");
 
                     b.Navigation("CourseCycle");
                 });
@@ -396,6 +415,16 @@ namespace BlazorSchoolApi.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BlazorSchoolApi.Data.CourseCycle", b =>
+                {
+                    b.Navigation("CourseTeachers");
+                });
+
+            modelBuilder.Entity("BlazorSchoolApi.Data.Enrollment", b =>
+                {
+                    b.Navigation("CourseCycle");
                 });
 #pragma warning restore 612, 618
         }

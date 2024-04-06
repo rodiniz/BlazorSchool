@@ -27,4 +27,10 @@
     <_ContentIncludedByDefault Remove="Pages\Teachers\SaveTeacher.razor" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Pages\CourseCycle\CourseTeacherDialog.razor.cs">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>

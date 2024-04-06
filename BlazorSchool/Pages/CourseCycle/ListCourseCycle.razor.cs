@@ -1,22 +1,19 @@
 ﻿using BlazorSchoolShared.Dto;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using System.Net.Http.Json;
 
 namespace BlazorSchool.Pages.CourseCycle;
 
 public partial class ListCourseCycle
 {
-    public List<CourseCycleDto>? CourseCycles { get; set; }
+
+    [Inject] public IDialogService DialogService { get; set; }
+
+    [Inject] public HttpClient HttpClient { get; set; }
+    public CourseCycleDto CourseCycle { get; set; } = new();
 
     public List<CourseDto>? Courses { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        CourseCycles = await HttpClient!.GetFromJsonAsync<List<CourseCycleDto>>("CourseCycle");
-    }
-    public void NavidateToSave(int? id)
-    {
-        Manager!.NavigateTo($"/CourseCycle/Save/{id}");
-    }
 
     public async Task Delete(int id)
     {
@@ -26,8 +23,33 @@ public partial class ListCourseCycle
             yesText: "Yes", noText: "No");
         if (result.HasValue)
         {
-            await HttpClient!.DeleteAsync($"CourseCycle/{id}");
-            CourseCycles = await HttpClient.GetFromJsonAsync<List<CourseCycleDto>>("CourseCycle");
+
+
         }
+    }
+
+    public async Task ShowDialog(int? id)
+    {
+        var parameters = new DialogParameters<CourseTeacherDialog>();
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+        if (id.HasValue)
+        {
+            parameters.Add(x => x.Id, id);
+        }
+        var dialog = await DialogService.ShowAsync<CourseTeacherDialog>("Course Cycle", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            CourseCycle.CourseTeachers.Add(result.Data as CourseTeacherDto);
+            StateHasChanged();
+        }
+
+    }
+
+    private async Task Save()
+    {
+        //TODO VALIDATE
+        await HttpClient.PostAsJsonAsync("CourseCycle", CourseCycle);
     }
 }

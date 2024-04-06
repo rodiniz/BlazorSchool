@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BlazorSchoolApi.Migrations
 {
     /// <inheritdoc />
-    public partial class v1 : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -59,11 +59,24 @@ namespace BlazorSchoolApi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Courses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Enrollments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StudentId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Enrollments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -178,39 +191,47 @@ namespace BlazorSchoolApi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CourseId = table.Column<int>(type: "int", nullable: false),
-                    TeacherId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Year = table.Column<int>(type: "int", nullable: false)
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    EnrollmentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CourseCycles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CourseCycles_Courses_CourseId",
-                        column: x => x.CourseId,
-                        principalTable: "Courses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_CourseCycles_Enrollments_EnrollmentId",
+                        column: x => x.EnrollmentId,
+                        principalTable: "Enrollments",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Enrollments",
+                name: "CourseTeachers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StudentId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CourseCycleId = table.Column<int>(type: "int", nullable: false)
+                    CourseId = table.Column<int>(type: "int", nullable: true),
+                    TeacherId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CourseCycleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Enrollments", x => x.Id);
+                    table.PrimaryKey("PK_CourseTeachers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Enrollments_CourseCycles_CourseCycleId",
+                        name: "FK_CourseTeachers_AspNetUsers_TeacherId",
+                        column: x => x.TeacherId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CourseTeachers_CourseCycles_CourseCycleId",
                         column: x => x.CourseCycleId,
                         principalTable: "CourseCycles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CourseTeachers_Courses_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Courses",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -219,7 +240,7 @@ namespace BlazorSchoolApi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CourseCycleId = table.Column<int>(type: "int", nullable: false)
+                    CourseCycleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -228,8 +249,7 @@ namespace BlazorSchoolApi.Migrations
                         name: "FK_StudentTests_CourseCycles_CourseCycleId",
                         column: x => x.CourseCycleId,
                         principalTable: "CourseCycles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -272,14 +292,24 @@ namespace BlazorSchoolApi.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CourseCycles_CourseId",
+                name: "IX_CourseCycles_EnrollmentId",
                 table: "CourseCycles",
+                column: "EnrollmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseTeachers_CourseCycleId",
+                table: "CourseTeachers",
+                column: "CourseCycleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseTeachers_CourseId",
+                table: "CourseTeachers",
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Enrollments_CourseCycleId",
-                table: "Enrollments",
-                column: "CourseCycleId");
+                name: "IX_CourseTeachers_TeacherId",
+                table: "CourseTeachers",
+                column: "TeacherId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StudentTests_CourseCycleId",
@@ -306,7 +336,7 @@ namespace BlazorSchoolApi.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Enrollments");
+                name: "CourseTeachers");
 
             migrationBuilder.DropTable(
                 name: "StudentTests");
@@ -318,10 +348,13 @@ namespace BlazorSchoolApi.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "Courses");
+
+            migrationBuilder.DropTable(
                 name: "CourseCycles");
 
             migrationBuilder.DropTable(
-                name: "Courses");
+                name: "Enrollments");
         }
     }
 }
