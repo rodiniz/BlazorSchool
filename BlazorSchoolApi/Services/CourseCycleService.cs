@@ -20,16 +20,25 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
 
     public async Task<IResult> Get(int id)
     {
-        var courseCycle = await (from cc in _context.CourseCycles
-                                
+        var courseCycle = await (from cc in _context.CourseCycles.AsNoTracking()
+                                    .Include(c=>c.CourseTeachers)
                                  select new CourseCycleDto
                                  {
                                      Id = cc.Id,
-                                    Year = cc.Year,
-                                    
-                                 }).SingleOrDefaultAsync(c => c.Id == id);
+                                     Year = cc.Year,
+                                     CourseTeachers = cc.CourseTeachers.Select(c => new CourseTeacherDto
+                                     {
+                                         CourseId = c.CourseId,
+                                         CourseName = c.Course.Description, 
+                                         Id = c.Id,
+                                         TeacherId = c.TeacherId,
+                                         TeacherName = c.Teacher.Name
+
+                                     }).ToList()
+
+                                 }).SingleOrDefaultAsync(c => c.Year == id);
         return courseCycle == null ?
-            TypedResults.NotFound() : TypedResults.Ok(courseCycle);
+            TypedResults.Ok() : TypedResults.Ok(courseCycle);
     }
 
     public async Task<IResult> Create(CourseCycleDto model)
@@ -42,8 +51,14 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
 
         var courseCycle = new CourseCycle
         {
-            
-            Year = model.Year.Value
+            Year = model.Year.Value,
+            CourseTeachers = model.CourseTeachers
+                .Select(c => new CourseTeacher
+                {
+                    CourseId = c.CourseId.Value,
+                    TeacherId = c.TeacherId
+                })
+                .ToList()
         };
         await _context.CourseCycles.AddAsync(courseCycle);
 
@@ -61,12 +76,24 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
 
         try
         {
-            var affected = await _context.CourseCycles
-                 .Where(b => b.Id == id)
-                 .ExecuteUpdateAsync(setters => setters
-                    
-                 );
-            return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+            var courseCycle = await _context.CourseCycles.SingleOrDefaultAsync(c => c.Id == id);
+            if (courseCycle == null)
+            {
+                return TypedResults.NotFound();
+            }
+            courseCycle.Year = model.Year.Value;
+
+            courseCycle.CourseTeachers = model.CourseTeachers
+                .Select(c => new CourseTeacher
+                {
+                    CourseId = c.CourseId.Value,
+                    TeacherId = c.TeacherId
+                })
+                .ToList();
+
+
+            await _context.SaveChangesAsync();
+            return TypedResults.Ok();
         }
         catch (Exception e)
         {
@@ -84,11 +111,11 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
     public Task<IResult> GetAll()
     {
         var dto = (from cc in _context.CourseCycles
-                 select new CourseCycleDto
+                   select new CourseCycleDto
                    {
                        Id = cc.Id,
-                      Year = cc.Year
-                       
+                       Year = cc.Year
+
                    }).ToList();
         return Task.FromResult<IResult>(TypedResults.Ok(dto));
     }

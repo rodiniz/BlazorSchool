@@ -11,10 +11,8 @@ public partial class CourseTeacherDialog
     private List<UserDto>? Teachers { get; set; } = new List<UserDto>();
     private List<CourseDto>? CourseDtos { get; set; } = new List<CourseDto>();
 
-    private CourseTeacherDto CourseTeacher { get; set; } = new();
+    public CourseTeacherDto CourseTeacher { get; set; } = new();
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-
-    [Parameter] public int? Id { get; set; }
 
 
 
@@ -26,13 +24,12 @@ public partial class CourseTeacherDialog
 
     void Submit()
     {
-        MudDialog.Close(DialogResult.Ok(new CourseTeacherDto
-        {
-            CourseId = CourseTeacher.CourseId,
-            TeacherId = CourseTeacher.TeacherId,
-            TeacherName = Teachers!.SingleOrDefault(c => c.Id == CourseTeacher.TeacherId)?.Name,
-            CourseName = CourseDtos!.SingleOrDefault(c => c.Id == CourseTeacher.CourseId)?.Description
-        }));
+        CourseTeacher.CourseId = CourseTeacher.CourseId;
+        CourseTeacher.TeacherId = CourseTeacher.TeacherId;
+        CourseTeacher.TeacherName = Teachers!.SingleOrDefault(c => c.Id == CourseTeacher.TeacherId)?.Name;
+        CourseTeacher.CourseName = CourseDtos!.SingleOrDefault(c => c.Id == CourseTeacher.CourseId)?.Description;
+
+        MudDialog.Close(DialogResult.Ok(CourseTeacher));
     }
     void Cancel() => MudDialog.Cancel();
 }

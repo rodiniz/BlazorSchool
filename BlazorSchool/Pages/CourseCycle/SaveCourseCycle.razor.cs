@@ -1,35 +1,64 @@
-﻿using BlazorSchoolShared.Dto;
+﻿using System.Net.Http.Json;
+using BlazorSchoolShared.Dto;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
-using System.Net.Http.Json;
 
 namespace BlazorSchool.Pages.CourseCycle;
 
 public partial class SaveCourseCycle
 {
-    private List<CourseDto>? CourseDtos { get; set; } = new List<CourseDto>();
-    private List<UserDto>? Teachers { get; set; } = new List<UserDto>();
-    public SaveCourseCycle() : base("CourseCycle")
+    [Inject] public IDialogService DialogService { get; set; }
+
+    [Inject] public HttpClient HttpClient { get; set; }
+    private CourseCycleDto CourseCycle { get; set; } = new();
+
+    
+    protected override void OnInitialized()
     {
+        CourseCycle ??= new();
     }
 
-    protected override async Task OnInitializedAsync()
+    public void Delete(CourseTeacherDto courseTeacherDto)
     {
-        CourseDtos = await Client!.GetFromJsonAsync<List<CourseDto>>($"Course");
-        Teachers = await Client!.GetFromJsonAsync<List<UserDto>>($"Users/GetTeachers");
-        await base.OnInitializedAsync();
+        CourseCycle.CourseTeachers.Remove(courseTeacherDto);
+        StateHasChanged();
     }
 
-    private async Task SubmitValidForm()
+    public async Task ShowDialog(CourseTeacherDto? courseTeacherDto)
     {
-        var success = await Save();
-        if (success)
+        var parameters = new DialogParameters<CourseTeacherDialog>();
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+        if (courseTeacherDto is not null)
         {
-            Manager!.NavigateTo($"/{Url}/List");
+            parameters.Add(x => x.CourseTeacher, courseTeacherDto);
+        }
+        var dialog = await DialogService.ShowAsync<CourseTeacherDialog>("Course Cycle", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            CourseCycle.CourseTeachers.Add(result.Data as CourseTeacherDto);
+            StateHasChanged();
+        }
+
+    }
+
+    private async Task Save()
+    {
+        if (CourseCycle.Id != 0)
+        {
+            await HttpClient.PutAsJsonAsync("CourseCycle", CourseCycle);
         }
         else
         {
-            Snackbar.Add("Error saving  Course", Severity.Error);
+            await HttpClient.PostAsJsonAsync("CourseCycle", CourseCycle);
         }
 
+    }
+
+    private async void LoadData(int? i)
+    {
+        CourseCycle = await HttpClient.GetFromJsonAsync<CourseCycleDto>("CourseCycle");
     }
 }

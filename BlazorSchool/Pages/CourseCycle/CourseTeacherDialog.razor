@@ -4,7 +4,7 @@
               <MudSelect T="int?" Label="Course"
                                    For="@(() => CourseTeacher.CourseId)"
                                     Variant="Variant.Outlined"
-                                    @bind-Value="CourseTeacher.CourseId">
+                                     @bind-Value="CourseTeacher.CourseId">
                              @foreach(var course in CourseDtos!)
                              {
                                  <MudSelectItem T="int?" Value="@course.Id">
@@ -13,13 +13,13 @@
                              }
                          </MudSelect>
                          
-                         <MudSelect T="string?" Label="Teacher"
+                         <MudSelect T="string" Label="Teacher"
                                     For="@(() => CourseTeacher.TeacherId)"
                                     Variant="Variant.Outlined"
                                                  @bind-Value="CourseTeacher.TeacherId">
                                             @foreach(var course in Teachers!)
                                                            {
-                                                               <MudSelectItem T="string?" Value="@course.Id">
+                                                               <MudSelectItem T="string" Value="@course.Id">
                                                                    @course.Name
                                                                </MudSelectItem>
                                                            }

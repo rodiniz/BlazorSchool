@@ -1,57 +1,43 @@
 ﻿@page "/CourseCycle/Save"
-@page "/CourseCycle/Save/{Id:int}"
-@attribute [Authorize]
-@using BlazorSchoolShared.Dto
-@inherits BaseSavePage<CourseCycleDto>
-@inject ISnackbar Snackbar
-<MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="pt-12 pa-4 align-center justify-center ">
-<EditForm Model="Dto" OnValidSubmit="SubmitValidForm">
-    <FluentValidationValidator />
-     <MudCard xs="6" Square="true" Elevation="4">
-         <MudCardContent>
-             <MudSelect T="int?" Label="Year"
-                        @bind-Value="Dto.Year" 
-                        For="@(() => Dto.Year)"
-                        Variant="Variant.Outlined"
-                        AnchorOrigin="Origin.BottomCenter">
-                 @for (int i = DateTime.Now.Year ; i < DateTime.Now.Year+5; i++)
-                 {
-                     <MudSelectItem T="int?" Value="@i"/>
-                 }
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-12 pa-4 align-center justify-center">
+    <EditForm  Model="CourseCycle" OnValidSubmit="Save">
+        <FluentValidationValidator/>
+        <ValidationSummary></ValidationSummary>
+    <MudCard xs="6" Square="true" Elevation="4">
+        <MudCardContent>
+            <MudSelect T="int?" Label="Year"
+                       @bind-Value="CourseCycle.Year"
+                       Variant="Variant.Outlined"
+                       AnchorOrigin="Origin.BottomCenter">
+                @for (int i = DateTime.Now.Year; i < DateTime.Now.Year + 5; i++)
+                {
+                    <MudSelectItem T="int?" Value="@i"/>
+                }
 
-             </MudSelect>
-             
-             <MudSelect T="int?" Label="Course"
-                        
-                         For="@(() => Dto.CourseId)"
-                        Variant="Variant.Outlined"
-                        @bind-Value="Dto.CourseId">
-                 @foreach(var course in CourseDtos!)
-                 {
-                     <MudSelectItem T="int?" Value="@course.Id">
-                         @course.Description
-                     </MudSelectItem>
-                 }
-             </MudSelect>
-             
-             <MudSelect T="string?" Label="Teacher"
-                        For="@(() => Dto.TeacherId)"
-                        Variant="Variant.Outlined"
-                                     @bind-Value="Dto.TeacherId">
-                                @foreach(var course in Teachers!)
-                                               {
-                                                   <MudSelectItem T="string?" Value="@course.Id">
-                                                       @course.Name
-                                                   </MudSelectItem>
-                                               }
-                          </MudSelect>
-         </MudCardContent>
+            </MudSelect>
+        </MudCardContent>
         <MudCardActions>
-                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto" OnClick="@(() => Manager!.NavigateTo("/CourseCycle/List") )" >Back</MudButton>
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="() => ShowDialog(null)">Add Course/Teacher</MudButton>
         </MudCardActions>
-    
-   
+        
+        <MudDataGrid Items="@CourseCycle.CourseTeachers">
+            <Columns>
+                <PropertyColumn Property="x => x.TeacherName"/>
+                <PropertyColumn Property="x => x.CourseName"/>
+                <TemplateColumn CellClass="d-flex justify-end">
+                    <CellTemplate Context="rowContext">
+                        <MudStack Row>
+                                <MudIconButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary" Icon="@Icons.Material.Filled.Edit" OnClick="() => ShowDialog(rowContext.Item)">Edit</MudIconButton>
+                                <MudIconButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary" Icon="@Icons.Material.Filled.Delete" OnClick="() => Delete(rowContext.Item)" Title="Delete"></MudIconButton>
+                        </MudStack>
+                    </CellTemplate>
+                </TemplateColumn>
+
+            </Columns>
+        </MudDataGrid>
+        <MudCardActions>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save Cycle</MudButton>
+        </MudCardActions>
     </MudCard>
-</EditForm>
+    </EditForm>
 </MudContainer>
