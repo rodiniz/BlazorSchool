@@ -21,7 +21,7 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
     public async Task<IResult> Get(int id)
     {
         var courseCycle = await (from cc in _context.CourseCycles.AsNoTracking()
-                                    .Include(c=>c.CourseTeachers)
+                                    .Include(c => c.CourseTeachers)
                                  select new CourseCycleDto
                                  {
                                      Id = cc.Id,
@@ -29,17 +29,18 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
                                      CourseTeachers = cc.CourseTeachers.Select(c => new CourseTeacherDto
                                      {
                                          CourseId = c.CourseId,
-                                         CourseName = c.Course.Description, 
+                                         CourseName = c.Course.Description,
                                          Id = c.Id,
                                          TeacherId = c.TeacherId,
                                          TeacherName = c.Teacher.Name
 
                                      }).ToList()
 
-                                 }).SingleOrDefaultAsync(c => c.Year == id);
+                                 }).SingleOrDefaultAsync(c => c.Id == id);
         return courseCycle == null ?
             TypedResults.Ok() : TypedResults.Ok(courseCycle);
     }
+
 
     public async Task<IResult> Create(CourseCycleDto model)
     {
@@ -52,12 +53,14 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
         var courseCycle = new CourseCycle
         {
             Year = model.Year.Value,
+            Description = model.Description,
+            IsActive = model.IsActive,
             CourseTeachers = model.CourseTeachers
-                .Select(c => new CourseTeacher
-                {
-                    CourseId = c.CourseId.Value,
-                    TeacherId = c.TeacherId
-                })
+                    .Select(c => new CourseTeacher
+                    {
+                        CourseId = c.CourseId.Value,
+                        TeacherId = c.TeacherId
+                    })
                 .ToList()
         };
         await _context.CourseCycles.AddAsync(courseCycle);
@@ -76,12 +79,18 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
 
         try
         {
-            var courseCycle = await _context.CourseCycles.SingleOrDefaultAsync(c => c.Id == id);
+            var courseCycle = await _context.CourseCycles.
+                Include(c => c.CourseTeachers)
+                .SingleOrDefaultAsync(c => c.Id == id);
             if (courseCycle == null)
             {
                 return TypedResults.NotFound();
             }
             courseCycle.Year = model.Year.Value;
+            courseCycle.Description = model.Description;
+            courseCycle.IsActive = model.IsActive;
+
+            courseCycle.CourseTeachers.Clear();
 
             courseCycle.CourseTeachers = model.CourseTeachers
                 .Select(c => new CourseTeacher
@@ -110,13 +119,19 @@ public class CourseCycleService : ICrudService<CourseCycleDto, int>
 
     public Task<IResult> GetAll()
     {
-        var dto = (from cc in _context.CourseCycles
-                   select new CourseCycleDto
-                   {
-                       Id = cc.Id,
-                       Year = cc.Year
-
-                   }).ToList();
+        var dto = _context.CourseCycles.Select(
+            c => new CourseCycleDto
+            {
+                Id = c.Id,
+                Year = c.Year,
+                CourseTeachers = c.CourseTeachers.Select(d => new CourseTeacherDto
+                {
+                    CourseId = d.CourseId,
+                    CourseName = d.Course.Description,
+                    TeacherId = d.TeacherId,
+                    TeacherName = d.Teacher.Name
+                }).ToList()
+            }).ToList();
         return Task.FromResult<IResult>(TypedResults.Ok(dto));
     }
 

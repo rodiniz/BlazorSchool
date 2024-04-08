@@ -1,20 +1,35 @@
-﻿@page "/CourseCycle/Save"
+﻿@page "/CourseCycle/Save/{Id:int?}"
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pt-12 pa-4 align-center justify-center">
     <EditForm  Model="CourseCycle" OnValidSubmit="Save">
         <FluentValidationValidator/>
-        <ValidationSummary></ValidationSummary>
+        <ValidationSummary class="" ></ValidationSummary>
     <MudCard xs="6" Square="true" Elevation="4">
         <MudCardContent>
-            <MudSelect T="int?" Label="Year"
-                       @bind-Value="CourseCycle.Year"
-                       Variant="Variant.Outlined"
-                       AnchorOrigin="Origin.BottomCenter">
-                @for (int i = DateTime.Now.Year; i < DateTime.Now.Year + 5; i++)
-                {
-                    <MudSelectItem T="int?" Value="@i"/>
-                }
+            <MudGrid>
+                <MudItem xs="4">
+                    
+                    <MudTextField Label="Descrição"
+                                      @bind-Value="CourseCycle.Description" For="@(() => CourseCycle.Description)" />
+                </MudItem>
+                <MudItem xs="2">
 
-            </MudSelect>
+                    <MudSelect T="int?" Label="Year"
+                               @bind-Value="CourseCycle.Year"
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter">
+                        @for (int i = DateTime.Now.Year; i < DateTime.Now.Year + 5; i++)
+                        {
+                            <MudSelectItem T="int?" Value="@i"/>
+                        }
+
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="2">
+                    
+                    <MudCheckBox Label="Is Active ?"
+                                     @bind-Checked="CourseCycle.IsActive" For="@(() => CourseCycle.IsActive)" />
+                </MudItem>
+            </MudGrid>
         </MudCardContent>
         <MudCardActions>
             <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="() => ShowDialog(null)">Add Course/Teacher</MudButton>
@@ -22,8 +37,8 @@
         
         <MudDataGrid Items="@CourseCycle.CourseTeachers">
             <Columns>
-                <PropertyColumn Property="x => x.TeacherName"/>
-                <PropertyColumn Property="x => x.CourseName"/>
+                <PropertyColumn Property="x => x.TeacherName" Title="Teacher" />
+                <PropertyColumn Property="x => x.CourseName" Title="Course" />
                 <TemplateColumn CellClass="d-flex justify-end">
                     <CellTemplate Context="rowContext">
                         <MudStack Row>

@@ -6,4 +6,7 @@ public class CourseCycleDto
     public int? Year { get; set; }
 
     public List<CourseTeacherDto> CourseTeachers { get; set; } = new();
+    public string Description { get; set; }
+
+    public bool IsActive { get; set; }
 }

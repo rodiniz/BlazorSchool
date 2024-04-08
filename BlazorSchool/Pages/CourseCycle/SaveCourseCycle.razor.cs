@@ -1,8 +1,8 @@
-﻿using System.Net.Http.Json;
+﻿#nullable enable
 using BlazorSchoolShared.Dto;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using System.Net.Http.Json;
 
 namespace BlazorSchool.Pages.CourseCycle;
 
@@ -13,10 +13,17 @@ public partial class SaveCourseCycle
     [Inject] public HttpClient HttpClient { get; set; }
     private CourseCycleDto CourseCycle { get; set; } = new();
 
-    
-    protected override void OnInitialized()
+    [Inject]
+    protected NavigationManager? Manager { get; set; }
+
+    [Parameter]
+    public int? Id { get; set; }
+    protected override async Task OnInitializedAsync()
     {
-        CourseCycle ??= new();
+        if (Id.HasValue)
+        {
+            CourseCycle = (await HttpClient!.GetFromJsonAsync<CourseCycleDto>($"CourseCycle/{Id.Value}"))!;
+        }
     }
 
     public void Delete(CourseTeacherDto courseTeacherDto)
@@ -28,7 +35,7 @@ public partial class SaveCourseCycle
     public async Task ShowDialog(CourseTeacherDto? courseTeacherDto)
     {
         var parameters = new DialogParameters<CourseTeacherDialog>();
-        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.Small };
         if (courseTeacherDto is not null)
         {
             parameters.Add(x => x.CourseTeacher, courseTeacherDto);
@@ -48,17 +55,14 @@ public partial class SaveCourseCycle
     {
         if (CourseCycle.Id != 0)
         {
-            await HttpClient.PutAsJsonAsync("CourseCycle", CourseCycle);
+            await HttpClient.PutAsJsonAsync($"CourseCycle/{CourseCycle.Id}", CourseCycle);
         }
         else
         {
             await HttpClient.PostAsJsonAsync("CourseCycle", CourseCycle);
         }
+        Manager!.NavigateTo("/CourseCycle/List");
 
     }
 
-    private async void LoadData(int? i)
-    {
-        CourseCycle = await HttpClient.GetFromJsonAsync<CourseCycleDto>("CourseCycle");
-    }
 }
