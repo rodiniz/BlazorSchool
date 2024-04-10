@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlazorSchoolApi.Services;
 
-public class EnrolmentService: ICrudService<EnrolmentDto,int>
+public class EnrolmentService : ICrudService<EnrolmentDto, int>
 {
     private readonly SchoolContext _context;
     private readonly IValidator<EnrolmentDto> _validator;
@@ -21,14 +21,13 @@ public class EnrolmentService: ICrudService<EnrolmentDto,int>
     public async Task<IResult> Get(int id)
     {
         var courseCycle = await (from en in _context.Enrollments
-           join student in _context.Users on  en.StudentId equals student.Id
-            select new EnrolmentDto
-            {
-                Id = en.Id,
-                StudentId = en.StudentId,
-                StudentName = student.Name
-            }).SingleOrDefaultAsync(c => c.Id == id);
-        return courseCycle == null ? 
+                                 select new EnrolmentDto
+                                 {
+                                     Id = en.Id,
+                                     StudentId = en.Student.Id,
+                                     StudentName = en.Student.Name
+                                 }).SingleOrDefaultAsync(c => c.Id == id);
+        return courseCycle == null ?
             TypedResults.NotFound() : TypedResults.Ok(courseCycle);
     }
 
@@ -39,13 +38,14 @@ public class EnrolmentService: ICrudService<EnrolmentDto,int>
         {
             return TypedResults.BadRequest(result.Errors);
         }
-        
+
         //TODO
         await _context.Enrollments.AddAsync(
             new Enrollment
             {
-               
-               StudentId = model.StudentId
+                CourseCycle = _context.CourseCycles.SingleOrDefault(c => c.Id == model.CourseCycleId),
+                Student = _context.Users.SingleOrDefault(c => c.Id == model.StudentId)
+
             });
         await _context.SaveChangesAsync();
         return TypedResults.Created();
@@ -63,6 +63,7 @@ public class EnrolmentService: ICrudService<EnrolmentDto,int>
             .Where(b => b.Id == id)
             .ExecuteUpdateAsync(setters => setters
                 .SetProperty(b => b.StudentId, model.StudentId)
+                .SetProperty(b => b.CourseCycleId, model.CourseCycleId)
             );
         return TypedResults.Ok();
     }
@@ -76,13 +77,13 @@ public class EnrolmentService: ICrudService<EnrolmentDto,int>
     public async Task<IResult> GetAll()
     {
         var courseCycle = await (from en in _context.Enrollments
-            join student in _context.Users on  en.StudentId equals student.Id
-            select new EnrolmentDto
-            {
-                Id = en.Id,
-                StudentId = en.StudentId,
-                StudentName = student.Name
-            }).ToListAsync();
+
+                                 select new EnrolmentDto
+                                 {
+                                     Id = en.Id,
+                                     StudentId = en.Student.Id,
+                                     StudentName = en.Student.Name
+                                 }).ToListAsync();
         return TypedResults.Ok(courseCycle);
     }
 

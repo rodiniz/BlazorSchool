@@ -1,33 +1,40 @@
-﻿@page "/CourseTeacherDialog"
-<MudDialog>
-    <DialogContent>
-              <MudSelect T="int?" Label="Course"
-                                   For="@(() => CourseTeacher.CourseId)"
-                                    Variant="Variant.Outlined"
-                                     @bind-Value="CourseTeacher.CourseId">
-                             @foreach(var course in CourseDtos!)
-                             {
-                                 <MudSelectItem T="int?" Value="@course.Id">
-                                     @course.Description
-                                 </MudSelectItem>
-                             }
-                         </MudSelect>
+﻿@if (Teachers == null || Teachers.Count == 0 || CourseDtos is null || CourseDtos.Count==0)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+}
+else
+{
+    <MudDialog>
+        <DialogContent>
+            <MudSelect T="int?" Label="Course"
+                       For="@(() => CourseTeacher.CourseId)"
+                       Variant="Variant.Outlined"
+                       @bind-Value="CourseTeacher.CourseId">
+                @foreach(var course in CourseDtos!)
+                {
+                    <MudSelectItem T="int?" Value="@course.Id">
+                        @course.Description
+                    </MudSelectItem>
+                }
+            </MudSelect>
                          
-                         <MudSelect T="string" Label="Teacher"
-                                    For="@(() => CourseTeacher.TeacherId)"
-                                    Variant="Variant.Outlined"
-                                                 @bind-Value="CourseTeacher.TeacherId">
-                                            @foreach(var course in Teachers!)
-                                                           {
-                                                               <MudSelectItem T="string" Value="@course.Id">
-                                                                   @course.Name
-                                                               </MudSelectItem>
-                                                           }
-                                      </MudSelect>
-    </DialogContent>
-    <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton  Variant="Variant.Filled" OnClick="Submit">Add</MudButton>
-    </DialogActions>
-</MudDialog>
+            <MudSelect T="string" Label="Teacher"
+                       For="@(() => CourseTeacher.TeacherId)"
+                       Variant="Variant.Outlined"
+                       @bind-Value="CourseTeacher.TeacherId">
+                @foreach(var course in Teachers!)
+                {
+                    <MudSelectItem T="string" Value="@course.Id">
+                        @course.Name
+                    </MudSelectItem>
+                }
+            </MudSelect>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton  Variant="Variant.Filled" OnClick="Submit">Add</MudButton>
+        </DialogActions>
+    </MudDialog>
+
+}
 

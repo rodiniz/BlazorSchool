@@ -1,4 +1,5 @@
-﻿using BlazorSchoolShared;
+﻿using System.Linq.Expressions;
+using BlazorSchoolShared;
 
 namespace BlazorSchoolApi.Interfaces
 {
@@ -15,5 +16,6 @@ namespace BlazorSchoolApi.Interfaces
         Task<IResult> GetAll();
 
         Task<IResult> GetPaged(TableStateDto tableStateDto);
+       
     }
 }

@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 namespace BlazorSchoolApi.Data
 {
-    public class SchoolContext:IdentityDbContext<ApplicationUser>
+    public class SchoolContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Course> Courses { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
@@ -12,10 +11,11 @@ namespace BlazorSchoolApi.Data
         public DbSet<CourseTeacher> CourseTeachers { get; set; }
         public SchoolContext()
         {
-            
+
         }
         public SchoolContext(DbContextOptions<SchoolContext> options) : base(options)
         {
         }
+
     }
 }

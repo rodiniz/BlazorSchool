@@ -1,31 +1,37 @@
 ﻿using BlazorSchoolShared.Dto;
+using Microsoft.AspNetCore.Components.Forms;
+using MudBlazor;
 using System.Net.Http.Json;
 
 namespace BlazorSchool.Pages.Enrolment;
 
 public partial class ListEnrolments
 {
+    public List<CourseCycleDto>? CourseCycleDtos { get; set; } = [];
 
-    public List<EnrolmentDto>? EnrolmentDtos { get; set; } = new List<EnrolmentDto>();
+    public List<UserDto>? Students { get; set; } = [];
+
+    public CourseCycleDto? CourseCycle { get; set; } = new();
+
+    public UserDto? Student { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
-        EnrolmentDtos = await HttpClient!.GetFromJsonAsync<List<EnrolmentDto>>("Enrolment");
-    }
-    public void NavidateToSave(int? id)
-    {
-        Manager!.NavigateTo($"/Enrolment/Save/{id}");
+        CourseCycleDtos = await HttpClient.GetFromJsonAsync<List<CourseCycleDto>>("/CourseCycle");
+        Students = await HttpClient.GetFromJsonAsync<List<UserDto>>("/User/GetStudents");
     }
 
-    public async Task Delete(int id)
+    private async Task SubmitValidForm(EditContext arg)
     {
-        bool? result = await DialogService!.ShowMessageBox(
-            "Warning",
-            "Are you sure you want to delete?",
-            yesText: "Yes", noText: "No");
-        if (result.HasValue)
+        var message = await HttpClient!.PostAsJsonAsync("/CourseCycle", CourseCycle);
+        if (message.IsSuccessStatusCode)
         {
-            await HttpClient?.DeleteAsync($"Enrolment/{id}")!;
-            EnrolmentDtos = (await HttpClient.GetFromJsonAsync<List<EnrolmentDto>>("Enrolment"))!;
+            Snackbar.Add("Enrolment saved", Severity.Success);
         }
+        else
+        {
+            Snackbar.Add("Error saving Enrolment", Severity.Error);
+        }
+        CourseCycle = new();
     }
 }

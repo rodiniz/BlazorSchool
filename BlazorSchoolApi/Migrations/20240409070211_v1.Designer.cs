@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorSchoolApi.Migrations
 {
     [DbContext(typeof(SchoolContext))]
-    [Migration("20240403075511_Initial")]
-    partial class Initial
+    [Migration("20240409070211_v1")]
+    partial class v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,15 +123,16 @@ namespace BlazorSchoolApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("EnrollmentId")
-                        .HasColumnType("int");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EnrollmentId");
 
                     b.ToTable("CourseCycles");
                 });
@@ -147,7 +148,7 @@ namespace BlazorSchoolApi.Migrations
                     b.Property<int?>("CourseCycleId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CourseId")
+                    b.Property<int>("CourseId")
                         .HasColumnType("int");
 
                     b.Property<string>("TeacherId")
@@ -172,10 +173,15 @@ namespace BlazorSchoolApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CourseCycleId")
+                        .HasColumnType("int");
+
                     b.Property<string>("StudentId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseCycleId");
 
                     b.ToTable("Enrollments");
                 });
@@ -331,13 +337,6 @@ namespace BlazorSchoolApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("BlazorSchoolApi.Data.CourseCycle", b =>
-                {
-                    b.HasOne("BlazorSchoolApi.Data.Enrollment", null)
-                        .WithMany("CourseCycle")
-                        .HasForeignKey("EnrollmentId");
-                });
-
             modelBuilder.Entity("BlazorSchoolApi.Data.CourseTeacher", b =>
                 {
                     b.HasOne("BlazorSchoolApi.Data.CourseCycle", null)
@@ -346,7 +345,9 @@ namespace BlazorSchoolApi.Migrations
 
                     b.HasOne("BlazorSchoolApi.Data.Course", "Course")
                         .WithMany()
-                        .HasForeignKey("CourseId");
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BlazorSchoolApi.Data.ApplicationUser", "Teacher")
                         .WithMany()
@@ -355,6 +356,15 @@ namespace BlazorSchoolApi.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("BlazorSchoolApi.Data.Enrollment", b =>
+                {
+                    b.HasOne("BlazorSchoolApi.Data.CourseCycle", "CourseCycle")
+                        .WithMany()
+                        .HasForeignKey("CourseCycleId");
+
+                    b.Navigation("CourseCycle");
                 });
 
             modelBuilder.Entity("BlazorSchoolApi.Data.StudentTests", b =>
@@ -420,11 +430,6 @@ namespace BlazorSchoolApi.Migrations
             modelBuilder.Entity("BlazorSchoolApi.Data.CourseCycle", b =>
                 {
                     b.Navigation("CourseTeachers");
-                });
-
-            modelBuilder.Entity("BlazorSchoolApi.Data.Enrollment", b =>
-                {
-                    b.Navigation("CourseCycle");
                 });
 #pragma warning restore 612, 618
         }

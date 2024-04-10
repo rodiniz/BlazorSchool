@@ -1,2 +1,31 @@
 ﻿@page "/Enrolment/List"
 @inherits BaseListPage
+@inject ISnackbar Snackbar
+@using BlazorSchool.Pages.CourseCycle
+<MudContainer MaxWidth="MaxWidth.Small" Class="pt-12 pa-4 align-center justify-center ">
+    
+    <MudSelect T="int?" Label="Course Cycle" @bind-Value="CourseCycle.Id">
+        @foreach (var cycle in CourseCycleDtos) {
+            <MudSelectItem Value="@cycle.Id" >@cycle.Year  @cycle.Description </MudSelectItem>
+        }
+    </MudSelect>
+    <MudSelect T="string" Label="Role" @bind-Value="Student.Id">
+        @foreach (var student in Students) {
+            <MudSelectItem Value="@student.Id" >@student.Name </MudSelectItem>
+        }
+    </MudSelect>
+    <EditForm Model="CourseCycle" OnValidSubmit="SubmitValidForm">
+        <FluentValidationValidator/>
+        <MudCard xs="6" Square="true" Elevation="4">
+            <MudCardContent>
+               <CourseTeacherList CourseTeachers="CourseCycle.CourseTeachers"></CourseTeacherList>
+            </MudCardContent>
+
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+            </MudCardActions>
+
+
+        </MudCard>
+    </EditForm>
+</MudContainer>
